@@ -1,6 +1,8 @@
 _G.NWC = {}
 NWC.mod_path = ModPath
 NWC.save_path = SavePath
+NWC.ENEMY = 1
+NWC.JOKER = 2
 NWC.settings = {
   force_hq = false,
   weapons = {
@@ -37,66 +39,6 @@ function NWC:get_weapon_id_index(weapon)
     end
   end
   return index
-end
-
-function NWC:setup_weapon(unit, weapon_unit, new_id, husk, convert, mastermind_criminal)
-  weapon_unit = weapon_unit or unit:inventory():get_latest_addition_hud_data().unit
-  local weapon_base = weapon_unit and weapon_unit:base()
-  if not weapon_base then
-    return false
-  end
-  
-  weapon_base._original_id = weapon_base._name_id
-  weapon_base._name_id = new_id
-  
-  tweak_data.weapon[weapon_base._name_id].sounds = tweak_data.weapon[weapon_base._original_id].sounds
-  tweak_data.weapon[weapon_base._name_id].hold = tweak_data.weapon[weapon_base._original_id].hold
-  tweak_data.weapon[weapon_base._name_id].reload = tweak_data.weapon[weapon_base._original_id].reload
-  tweak_data.weapon[weapon_base._name_id].pull_magazine_during_reload = tweak_data.weapon[weapon_base._original_id].pull_magazine_during_reload
-
-  weapon_base:set_ammo_max(tweak_data.weapon[weapon_base._name_id].AMMO_MAX)
-  weapon_base:set_ammo_total(weapon_base:get_ammo_max())
-  weapon_base:set_ammo_max_per_clip(tweak_data.weapon[weapon_base._name_id].CLIP_AMMO_MAX)
-  weapon_base:set_ammo_remaining_in_clip(weapon_base:get_ammo_max_per_clip())
-
-  local damage_multiplier = 1
-  if convert then
-    if alive(mastermind_criminal) then
-      damage_multiplier = damage_multiplier * (mastermind_criminal:base():upgrade_value("player", "convert_enemies_damage_multiplier") or 1)
-      damage_multiplier = damage_multiplier * (mastermind_criminal:base():upgrade_value("player", "passive_convert_enemies_damage_multiplier") or 1)
-    else
-      damage_multiplier = damage_multiplier * managers.player:upgrade_value("player", "convert_enemies_damage_multiplier", 1)
-      damage_multiplier = damage_multiplier * managers.player:upgrade_value("player", "passive_convert_enemies_damage_multiplier", 1)
-    end
-  end
-  
-  weapon_base._damage = tweak_data.weapon[weapon_base._name_id].DAMAGE * damage_multiplier
-
-  if not convert then
-    weapon_base._setup.alert_AI = not husk
-    weapon_base._setup.alert_filter = weapon_base._setup.alert_AI and unit:brain():SO_access()
-    weapon_base._setup.hit_slotmask = husk and managers.slot:get_mask("bullet_impact_targets_no_AI") or managers.slot:get_mask("bullet_impact_targets") or weapon_base._bullet_slotmask
-    weapon_base._setup.hit_player = true
-    weapon_base._setup.ignore_units = {
-      unit,
-      weapon_unit,
-      unit:inventory()._shield_unit
-    }
-  
-    weapon_base._alert_size = tweak_data.weapon[weapon_base._name_id].alert_size
-    weapon_base._suppression = tweak_data.weapon[weapon_base._name_id].suppression
-    weapon_base._bullet_slotmask = weapon_base._setup.hit_slotmask
-    weapon_base._hit_player = weapon_base._setup.hit_player
-    weapon_base._alert_events = weapon_base._setup.alert_AI and {} or nil
-  end
-  
-  weapon_base._fire_raycast = NPCRaycastWeaponBase._fire_raycast
-  
-  if weapon_base.AKIMBO and alive(weapon_base._second_gun) then
-    self:setup_weapon(unit, weapon_base._second_gun, new_id, husk, convert, mastermind_criminal)
-  end
-  
-  return true
 end
 
 function NWC:open_weapon_category_menu(category, weapon)

@@ -1,12 +1,5 @@
-function CopInventory:add_unit_by_factory_blueprint(...)
-  NWC.enemy_gun_added = not NWC.settings.force_hq
-  HuskPlayerInventory.add_unit_by_factory_blueprint(self, ...)
-  NWC.enemy_gun_added = false
-end
-
-function CopInventory:add_unit_by_factory_name(...)
-  HuskPlayerInventory.add_unit_by_factory_name(self, ...)
-end
+CopInventory.add_unit_by_factory_blueprint = HuskPlayerInventory.add_unit_by_factory_blueprint
+CopInventory.add_unit_by_factory_name = HuskPlayerInventory.add_unit_by_factory_name
 
 local save_original = CopInventory.save
 function CopInventory:save(data, ...)
