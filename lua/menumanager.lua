@@ -3,6 +3,7 @@ NWC.mod_path = ModPath
 NWC.save_path = SavePath
 NWC.ENEMY = 1
 NWC.JOKER = 2
+NWC.tweak_setups = {}
 NWC.settings = {
   force_hq = false,
   weapons = {
@@ -26,7 +27,8 @@ NWC.settings = {
     asval_smg = { id = "asval_smg_npc", name = "wpn_fps_ass_asval_npc" },
     ak47_ass = { id = "ak47_ass_npc", name = "wpn_fps_ass_74_npc" },
     x_c45 = { id = "x_c45_npc", name = "wpn_fps_x_1911_npc" },
-    sg417 = { id = "contraband_npc", name = "wpn_fps_ass_contraband_npc" }
+    sg417 = { id = "contraband_npc", name = "wpn_fps_ass_contraband_npc" },
+    mini = { id = "mini_npc", name = "wpn_fps_lmg_m134_npc" }
   }
 }
 
@@ -60,12 +62,9 @@ function NWC:open_weapon_category_menu(category, weapon)
   managers.menu:open_node("blackmarket_node", {new_node_data})
 end
 
-function NWC:buy_new_weapon(data, gui)
-  gui:open_weapon_buy_menu(data, function () return true end)
-end
-
-function NWC:create_pages(new_node_data, params, identifier, selected_slot, rows, columns, max_pages)
+function NWC:create_pages(new_node_data, weapon, identifier, selected_slot, rows, columns, max_pages)
   local category = new_node_data.category
+  local loadout = self.settings.weapons[weapon] or {}
   rows = rows or 3
   columns = columns or 3
   max_pages = max_pages or 8
@@ -79,7 +78,7 @@ function NWC:create_pages(new_node_data, params, identifier, selected_slot, rows
     for i = start_i, items_per_page * page, 1 do
       item_data[index] = i
       index = index + 1
-      if i == selected_slot then
+      if i == selected_slot and category == loadout.category then
         selected_tab = page
       end
     end
@@ -91,7 +90,7 @@ function NWC:create_pages(new_node_data, params, identifier, selected_slot, rows
       category = category,
       start_i = start_i,
       name_localized = name_id,
-      on_create_func = callback(self, self, "populate_weapons", params),
+      on_create_func = callback(self, self, "populate_weapons", weapon),
       on_create_data = item_data,
       identifier = BlackMarketGui.identifiers[identifier],
       override_slots = {
@@ -156,6 +155,16 @@ function NWC:show_weapon_selection(weapon)
   QuickMenu:new(menu_title, menu_message, menu_options, true)
 end
 
+function NWC:merge_tables(tbl1, tbl2)
+  for k, v in pairs(tbl2) do
+    if type(tbl1[k]) == "table" and type(v) == "table" then
+      NWC:merge_tables(tbl1[k], v)
+    else
+      tbl1[k] = v
+    end
+  end
+end
+
 function NWC:save()
   local file = io.open(self.save_path .. "NWC_settings.txt", "w+")
   if file then
@@ -169,16 +178,7 @@ function NWC:load()
   if file then
     local data = json.decode(file:read("*all")) or {}
     file:close()
-    for k, v in pairs(data) do
-      if type(v) == "table" then
-        self.settings[k] = self.settings[k] or {}
-        for k2, v2 in pairs(v) do
-          self.settings[k][k2] = v2
-        end
-      else
-        self.settings[k] = v
-      end
-    end
+    NWC:merge_tables(self.settings, data)
   end
 end
 
@@ -234,33 +234,32 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     priority = 100
   })
   
-  if not Utils:IsInGameState() then
-    MenuHelper:AddDivider({
-      id = "divider",
-      size = 16,
+
+  MenuHelper:AddDivider({
+    id = "divider",
+    size = 16,
+    menu_id = menu_id_main,
+    priority = 99
+  })
+  
+  local priority = 90
+  for k, v in pairs(NWC.settings.weapons) do
+    
+    priority = priority - 1
+    
+    MenuCallbackHandler["NWC_setup_" .. k] = function (self)
+      NWC:show_weapon_selection(k)
+    end
+    
+    MenuHelper:AddButton({
+      id = "weapon_" .. k,
+      title = k:pretty(),
+      callback = "NWC_setup_" .. k,
       menu_id = menu_id_main,
-      priority = 99
+      localized = false,
+      priority = priority
     })
     
-    local priority = 90
-    for k, v in pairs(NWC.settings.weapons) do
-      
-      priority = priority - 1
-      
-      MenuCallbackHandler["NWC_setup_" .. k] = function (self)
-        NWC:show_weapon_selection(k)
-      end
-      
-      MenuHelper:AddButton({
-        id = "weapon_" .. k,
-        title = k:pretty(),
-        callback = "NWC_setup_" .. k,
-        menu_id = menu_id_main,
-        localized = false,
-        priority = priority
-      })
-      
-    end
   end
   
 end)

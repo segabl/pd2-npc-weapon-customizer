@@ -23,10 +23,16 @@ function NewNPCRaycastWeaponBase:setup(...)
     self._original_id = self._name_id
     self._name_id = NWC.npc_gun_added.id
     
-    tweak_data.weapon[self._name_id].sounds = tweak_data.weapon[self._original_id].sounds
-    tweak_data.weapon[self._name_id].hold = tweak_data.weapon[self._original_id].hold
-    tweak_data.weapon[self._name_id].reload = tweak_data.weapon[self._original_id].reload
-    tweak_data.weapon[self._name_id].pull_magazine_during_reload = tweak_data.weapon[self._original_id].pull_magazine_during_reload
+    if not NWC.tweak_setups[self._name_id] then
+      tweak_data.weapon[self._name_id].sounds = tweak_data.weapon[self._original_id].sounds
+      tweak_data.weapon[self._name_id].hold = tweak_data.weapon[self._original_id].hold
+      tweak_data.weapon[self._name_id].reload = tweak_data.weapon[self._original_id].reload
+      tweak_data.weapon[self._name_id].pull_magazine_during_reload = tweak_data.weapon[self._original_id].pull_magazine_during_reload
+      tweak_data.weapon[self._name_id].muzzleflash = tweak_data.weapon[self._original_id].muzzleflash
+      tweak_data.weapon[self._name_id].shell_ejection = tweak_data.weapon[self._original_id].shell_ejection
+      
+      NWC.tweak_setups[self._name_id] = true
+    end
 
     self:set_ammo_max(tweak_data.weapon[self._name_id].AMMO_MAX)
     self:set_ammo_total(self:get_ammo_max())
