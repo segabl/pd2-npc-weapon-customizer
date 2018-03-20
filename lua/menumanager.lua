@@ -36,7 +36,7 @@ function NWC:get_weapon_id_index(weapon)
       break
     end
   end
-  return tweak_data.character.weap_unit_names[index]
+  return index
 end
 
 function NWC:setup_weapon(unit, new_id, husk, convert, mastermind_criminal, weapon_unit)
