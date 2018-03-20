@@ -39,8 +39,8 @@ function NWC:get_weapon_id_index(weapon)
   return tweak_data.character.weap_unit_names[index]
 end
 
-function NWC:setup_weapon(unit, new_id, husk, convert, mastermind_criminal)
-  local weapon_unit = unit:inventory():get_latest_addition_hud_data().unit
+function NWC:setup_weapon(unit, new_id, husk, convert, mastermind_criminal, weapon_unit)
+  weapon_unit = weapon_unit or unit:inventory():get_latest_addition_hud_data().unit
   local weapon_base = weapon_unit and weapon_unit:base()
   if not weapon_base then
     return false
@@ -90,7 +90,7 @@ function NWC:setup_weapon(unit, new_id, husk, convert, mastermind_criminal)
   weapon_base._fire_raycast = NPCRaycastWeaponBase._fire_raycast
   
   if weapon_base.AKIMBO and alive(weapon_base._second_gun) then
-    self:setup_weapon(weapon_base._second_gun, new_id, husk, convert, mastermind_criminal)
+    self:setup_weapon(unit, new_id, husk, convert, mastermind_criminal, weapon_base._second_gun)
   end
   
   return true
