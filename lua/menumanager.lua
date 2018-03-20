@@ -12,7 +12,6 @@ NWC.settings = {
     r870 = { id = "r870_npc", name = "wpn_fps_shot_r870_npc" },
     mp5 = { id = "mp5_npc", name = "wpn_fps_smg_mp5_npc" },
     mp5_tactical = { id = "mp5_tactical_npc", name = "wpn_fps_smg_mp5_npc" },
-    --mp9 = { id = "mp9", name = "wpn_fps_smg_mp9_npc" },
     mac11 = { id = "mac11_npc", name = "wpn_fps_smg_mac10_npc" },
     saiga = { id = "saiga_npc", name = "wpn_fps_shot_saiga_npc" },
     m249 = { id = "m249_npc", name = "wpn_fps_lmg_m249_npc" },
@@ -23,8 +22,9 @@ NWC.settings = {
     rpk_lmg = { id = "rpk_lmg_npc", name = "wpn_fps_lmg_rpk_npc" },
     akmsu_smg = { id = "akmsu_smg_npc", name = "wpn_fps_smg_akmsu_npc" },
     asval_smg = { id = "asval_smg_npc", name = "wpn_fps_ass_asval_npc" },
-    --sr2_smg = { id = "sr2_smg_npc", name = "wpn_fps_smg_sr2_npc" },
-    ak47_ass = { id = "ak47_ass_npc", name = "wpn_fps_ass_74_npc" }
+    ak47_ass = { id = "ak47_ass_npc", name = "wpn_fps_ass_74_npc" },
+    x_c45 = { id = "x_c45_npc", name = "wpn_fps_x_1911_npc" },
+    sg417 = { id = "contraband_npc", name = "wpn_fps_ass_contraband_npc" }
   }
 }
 
@@ -88,6 +88,10 @@ function NWC:setup_weapon(unit, new_id, husk, convert, mastermind_criminal)
   end
   
   weapon_base._fire_raycast = NPCRaycastWeaponBase._fire_raycast
+  
+  if weapon_base.AKIMBO and alive(weapon_base._second_gun) then
+    self:setup_weapon(weapon_base._second_gun, new_id, husk, convert, mastermind_criminal)
+  end
   
   return true
 end
