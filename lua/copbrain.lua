@@ -3,7 +3,7 @@ function CopBrain:convert_to_criminal(mastermind_criminal, ...)
   convert_to_criminal_original(self, mastermind_criminal, ...)
 
   local _, weap = self._unit:base():default_weapon_name()
-  if weap then
+  if weap and weap.id and weap.name then
     local equipped_w_selection = self._unit:inventory():equipped_selection()
     if equipped_w_selection then
       self._unit:inventory():remove_selection(equipped_w_selection, true)
