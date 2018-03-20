@@ -7,7 +7,7 @@ end
 local use_thq_original = NewNPCRaycastWeaponBase.use_thq
 function NewNPCRaycastWeaponBase:use_thq(...)
   if self._force_tp == nil then
-    self._force_tp = NWC.npc_gun_added and not NWC.npc_gun_added.is_joker and not NWC.settings.force_hq
+    self._force_tp = NWC.npc_gun_added and not NWC:is_joker(NWC.npc_gun_added.unit) and not NWC.settings.force_hq
   end
   if self._force_tp then
     return false
@@ -20,6 +20,7 @@ function NewNPCRaycastWeaponBase:setup(...)
   setup_original(self, ...)
 
   if NWC.npc_gun_added then
+    self._default_id = NWC.npc_gun_added.default_id
     self._original_id = self._name_id
     self._name_id = NWC.npc_gun_added.id
     
@@ -41,10 +42,10 @@ function NewNPCRaycastWeaponBase:setup(...)
     
     self._damage = tweak_data.weapon[self._name_id].DAMAGE
 
-    if not NWC.npc_gun_added.is_joker then
-      self._setup.alert_AI = not NWC.npc_gun_added.is_husk
-      self._setup.alert_filter = self._setup.alert_AI and NWC.npc_gun_added.unit:brain():SO_access()
-      self._setup.hit_slotmask = NWC.npc_gun_added.is_husk and managers.slot:get_mask("bullet_impact_targets_no_AI") or managers.slot:get_mask("bullet_impact_targets") or self._bullet_slotmask
+    if not NWC:is_joker(NWC.npc_gun_added.unit) then
+      self._setup.alert_AI = not NWC.is_client
+      self._setup.alert_filter = not NWC.is_client and NWC.npc_gun_added.unit:brain().SO_access and NWC.npc_gun_added.unit:brain():SO_access()
+      self._setup.hit_slotmask = NWC.is_client and managers.slot:get_mask("bullet_impact_targets_no_AI") or managers.slot:get_mask("bullet_impact_targets") or self._bullet_slotmask
       self._setup.hit_player = true
       self._setup.ignore_units = {
         NWC.npc_gun_added.unit,

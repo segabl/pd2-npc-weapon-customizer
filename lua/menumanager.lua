@@ -1,8 +1,7 @@
 _G.NWC = {}
 NWC.mod_path = ModPath
 NWC.save_path = SavePath
-NWC.ENEMY = 1
-NWC.JOKER = 2
+NWC.is_client = Network:is_client()
 NWC.tweak_setups = {}
 NWC.settings = {
   force_hq = false,
@@ -34,13 +33,23 @@ NWC.settings = {
 
 function NWC:get_weapon_id_index(weapon)
   local index = 1
-  for i, v in pairs(tweak_data.character.weap_ids) do
+  for i, v in ipairs(tweak_data.character.weap_ids) do
     if v == weapon then
       index = i
       break
     end
   end
   return index
+end
+
+function NWC:check_weapon(weapon)
+  return weapon and weapon.id and weapon.name and tweak_data.weapon.factory[weapon.name] and true or false
+end
+
+function NWC:is_joker(unit)
+  local movement = alive(unit) and unit:movement()
+  local team = movement and movement.team and movement:team() or {}
+  return team.id == "converted_enemy"
 end
 
 function NWC:open_weapon_category_menu(category, weapon)
