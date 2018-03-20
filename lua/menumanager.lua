@@ -191,7 +191,7 @@ function NWC:select_weapon(weapon, data, gui)
 end
 
 function NWC:show_weapon_selection(weapon)
-  local menu_title = "Select category"
+  local menu_title = managers.localization:text("NWC_menu_select_category")
   local menu_message = ""
   local menu_options = {
     {
@@ -211,30 +211,54 @@ function NWC:show_weapon_selection(weapon)
   QuickMenu:new(menu_title, menu_message, menu_options, true)
 end
 
-local file = io.open(NWC.save_path .. "NWC_settings.txt", "r")
-if file then
-  local data = json.decode(file:read("*all")) or {}
-  file:close()
-  for k, v in pairs(data) do
-    if type(v) == "table" then
-      NWC.settings[k] = NWC.settings[k] or {}
-      for k2, v2 in pairs(v) do
-        NWC.settings[k][k2] = v2
+function NWC:save()
+  local file = io.open(self.save_path .. "NWC_settings.txt", "w+")
+  if file then
+    file:write(json.encode(self.settings))
+    file:close()
+  end
+end
+
+function NWC:load()
+  local file = io.open(self.save_path .. "NWC_settings.txt", "r")
+  if file then
+    local data = json.decode(file:read("*all")) or {}
+    file:close()
+    for k, v in pairs(data) do
+      if type(v) == "table" then
+        self.settings[k] = self.settings[k] or {}
+        for k2, v2 in pairs(v) do
+          self.settings[k][k2] = v2
+        end
+      else
+        self.settings[k] = v
       end
-    else
-      NWC.settings[k] = v
     end
   end
 end
 
 Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInitNWC", function(loc)
   
-  loc:add_localized_strings({
-    ["NWC_menu_main_name"] = "NPC Weapon Customizer",
-    ["NWC_menu_main_desc"] = "Customize the look of NPC weapons",
-    ["NWC_menu_force_hq"] = "Use HQ models for all NPCs",
-    ["NWC_menu_force_hq_desc"] = "Forces all NPCs to use HQ models (WARNING: very memory intensive!)"
-  })
+  local system_language_key = SystemInfo:language():key()
+  local system_is_english = system_language_key == Idstring("english"):key()
+  local blt_language = BLT.Localization:get_language().language
+  local language = "english"
+  
+  for _, filename in pairs(file.GetFiles(NWC.mod_path .. "loc/") or {}) do
+    local str = filename:match("^(.*).txt$")
+    if str then
+      local system_match = not system_is_english and Idstring(str):key() == system_language_key
+      local blt_match = system_is_english and str == blt_language
+      local mod_match = false
+      if system_match or blt_match or mod_match then
+        language = str
+        break
+      end
+    end
+  end
+  
+  loc:load_localization_file(NWC.mod_path .. "loc/english.txt")
+  loc:load_localization_file(NWC.mod_path .. "loc/" .. language .. ".txt")
 
 end)
 
@@ -245,12 +269,10 @@ end)
 
 Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC", function(menu_manager, nodes)
 
+  NWC:load()
+
   MenuCallbackHandler.NWC_save = function ()
-    local file = io.open(NWC.save_path .. "NWC_settings.txt", "w+")
-    if file then
-      file:write(json.encode(NWC.settings))
-      file:close()
-    end
+    NWC:save()
   end
   
   MenuCallbackHandler.NWC_toggle = function(self, item)
@@ -267,31 +289,33 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     priority = 100
   })
   
-  MenuHelper:AddDivider({
-    id = "divider",
-    size = 24,
-    menu_id = menu_id_main,
-    priority = 99
-  })
-  
-  local priority = 90
-  for k, v in pairs(NWC.settings.weapons) do
-    
-    priority = priority - 1
-    
-    MenuCallbackHandler["NWC_setup_" .. k] = function (self)
-      NWC:show_weapon_selection(k)
-    end
-    
-    MenuHelper:AddButton({
-      id = "weapon_" .. k,
-      title = k:pretty(),
-      callback = "NWC_setup_" .. k,
+  if not Utils:IsInGameState() then
+    MenuHelper:AddDivider({
+      id = "divider",
+      size = 16,
       menu_id = menu_id_main,
-      localized = false,
-      priority = priority
+      priority = 99
     })
     
+    local priority = 90
+    for k, v in pairs(NWC.settings.weapons) do
+      
+      priority = priority - 1
+      
+      MenuCallbackHandler["NWC_setup_" .. k] = function (self)
+        NWC:show_weapon_selection(k)
+      end
+      
+      MenuHelper:AddButton({
+        id = "weapon_" .. k,
+        title = k:pretty(),
+        callback = "NWC_setup_" .. k,
+        menu_id = menu_id_main,
+        localized = false,
+        priority = priority
+      })
+      
+    end
   end
   
 end)

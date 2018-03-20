@@ -1,0 +1,7 @@
+{
+  "NWC_menu_main_name" : "NPC Weapon Customizer",
+  "NWC_menu_main_desc" : "Passe das Aussehen der NPC Waffen an",
+  "NWC_menu_force_hq" : "Verwende HQ Modelle für alle NPCs",
+  "NWC_menu_force_hq_desc" : "Alle NPCs werden HQ Waffenmodelle verwenden (WARNUNG: sehr speicherintensiv!)",
+  "NWC_menu_select_category" : "Select category"
+}
