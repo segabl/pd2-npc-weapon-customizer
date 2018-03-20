@@ -10,7 +10,7 @@ function CopBrain:convert_to_criminal(mastermind_criminal, ...)
     end
   
     TeamAIInventory.add_unit_by_factory_blueprint(self._unit:inventory(), weap.name, true, true, weap.blueprint or tweak_data.weapon.factory[weap.name].default_blueprint, weap.cosmetics)
-    NWC:setup_weapon(self._unit, weap.id, false, true, mastermind_criminal)
+    NWC:setup_weapon(self._unit, nil, weap.id, false, true, mastermind_criminal)
     
   end
 

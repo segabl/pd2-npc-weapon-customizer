@@ -39,7 +39,7 @@ function NWC:get_weapon_id_index(weapon)
   return index
 end
 
-function NWC:setup_weapon(unit, new_id, husk, convert, mastermind_criminal, weapon_unit)
+function NWC:setup_weapon(unit, weapon_unit, new_id, husk, convert, mastermind_criminal)
   weapon_unit = weapon_unit or unit:inventory():get_latest_addition_hud_data().unit
   local weapon_base = weapon_unit and weapon_unit:base()
   if not weapon_base then
@@ -73,24 +73,27 @@ function NWC:setup_weapon(unit, new_id, husk, convert, mastermind_criminal, weap
   weapon_base._damage = tweak_data.weapon[weapon_base._name_id].DAMAGE * damage_multiplier
 
   if not convert then
-    weapon_base._alert_size = tweak_data.weapon[weapon_base._name_id].alert_size
-    weapon_base._suppression = tweak_data.weapon[weapon_base._name_id].suppression
-    weapon_base._bullet_slotmask = husk and managers.slot:get_mask("bullet_impact_targets_no_AI") or managers.slot:get_mask("bullet_impact_targets") or weapon_base._bullet_slotmask
-    weapon_base._hit_player = true
-    weapon_base._setup.alert_filter = unit:brain():SO_access()
-    weapon_base._setup.hit_slotmask = weapon_base._bullet_slotmask
-    weapon_base._setup.hit_player = weapon_base._hit_player
+    weapon_base._setup.alert_AI = not husk
+    weapon_base._setup.alert_filter = weapon_base._setup.alert_AI and unit:brain():SO_access()
+    weapon_base._setup.hit_slotmask = husk and managers.slot:get_mask("bullet_impact_targets_no_AI") or managers.slot:get_mask("bullet_impact_targets") or weapon_base._bullet_slotmask
+    weapon_base._setup.hit_player = true
     weapon_base._setup.ignore_units = {
       unit,
-      weapon_base._unit,
+      weapon_unit,
       unit:inventory()._shield_unit
     }
+  
+    weapon_base._alert_size = tweak_data.weapon[weapon_base._name_id].alert_size
+    weapon_base._suppression = tweak_data.weapon[weapon_base._name_id].suppression
+    weapon_base._bullet_slotmask = weapon_base._setup.hit_slotmask
+    weapon_base._hit_player = weapon_base._setup.hit_player
+    weapon_base._alert_events = weapon_base._setup.alert_AI and {} or nil
   end
   
   weapon_base._fire_raycast = NPCRaycastWeaponBase._fire_raycast
   
   if weapon_base.AKIMBO and alive(weapon_base._second_gun) then
-    self:setup_weapon(unit, new_id, husk, convert, mastermind_criminal, weapon_base._second_gun)
+    self:setup_weapon(unit, weapon_base._second_gun, new_id, husk, convert, mastermind_criminal)
   end
   
   return true
