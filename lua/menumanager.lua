@@ -220,8 +220,10 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInitNWC", funct
 end)
 
 local menu_id_main = "NWCMenu"
+local menu_id_weapons = "NWCMenuWeapons"
 Hooks:Add("MenuManagerSetupCustomMenus", "MenuManagerSetupCustomMenusNWC", function(menu_manager, nodes)
   MenuHelper:NewMenu(menu_id_main)
+  MenuHelper:NewMenu(menu_id_weapons)
 end)
 
 Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC", function(menu_manager, nodes)
@@ -245,7 +247,6 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     menu_id = menu_id_main,
     priority = 100
   })
-  
 
   MenuHelper:AddDivider({
     id = "divider",
@@ -267,7 +268,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
       id = "weapon_" .. k,
       title = k:pretty(),
       callback = "NWC_setup_" .. k,
-      menu_id = menu_id_main,
+      menu_id = menu_id_weapons,
       localized = false,
       priority = priority
     })
@@ -278,5 +279,16 @@ end)
 
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenusPlayerNWC", function(menu_manager, nodes)
   nodes[menu_id_main] = MenuHelper:BuildMenu(menu_id_main, { back_callback = "NWC_save" })
+  nodes[menu_id_weapons] = MenuHelper:BuildMenu(menu_id_weapons, { back_callback = "NWC_save" })
   MenuHelper:AddMenuItem(nodes["blt_options"], menu_id_main, "NWC_menu_main_name", "NWC_menu_main_desc")
+  MenuHelper:AddMenuItem(nodes[menu_id_main], menu_id_weapons, "NWC_menu_weapons_name", "NWC_menu_weapons_desc")
+end)
+
+Hooks:Add("MenuManagerOnOpenMenu", "MenuManagerOnOpenMenuNWC", function ()
+  for _, item in pairs(MenuHelper:GetMenu(menu_id_main)._items) do
+    if item:name() == menu_id_weapons then
+      item:set_enabled(not Utils:IsInGameState())
+      break
+    end
+  end
 end)
