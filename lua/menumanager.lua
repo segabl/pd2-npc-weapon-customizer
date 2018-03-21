@@ -46,12 +46,6 @@ function NWC:check_weapon(weapon)
   return weapon and weapon.id and weapon.name and tweak_data.weapon.factory[weapon.name] and true or false
 end
 
-function NWC:is_joker(unit)
-  local movement = alive(unit) and unit:movement()
-  local team = movement and movement.team and movement:team() or {}
-  return team.id == "converted_enemy"
-end
-
 function NWC:open_weapon_category_menu(category, weapon)
   local loadout = self.settings.weapons[weapon] or {}
   local new_node_data = {category = category}
