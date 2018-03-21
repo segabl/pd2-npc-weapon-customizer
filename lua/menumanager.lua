@@ -71,9 +71,6 @@ function NWC:open_weapon_category_menu(category, weapon)
     w_unequip = callback(self, self, "select_weapon", weapon)
   }
   new_node_data.topic_id = "bm_menu_" .. category
-  new_node_data.topic_params = {
-    weapon_category = managers.localization:text("bm_menu_weapons")
-  }
   managers.menu:open_node("blackmarket_node", {new_node_data})
 end
 
@@ -267,18 +264,18 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
   })
   
   local priority = 90
-  for k, v in pairs(NWC.settings.weapons) do
+  for _, name in ipairs(table.map_keys(NWC.settings.weapons)) do
     
     priority = priority - 1
     
-    MenuCallbackHandler["NWC_setup_" .. k] = function (self)
-      NWC:show_weapon_selection(k)
+    MenuCallbackHandler["NWC_setup_" .. name] = function (self)
+      NWC:show_weapon_selection(name)
     end
     
     MenuHelper:AddButton({
-      id = "weapon_" .. k,
-      title = k:pretty(),
-      callback = "NWC_setup_" .. k,
+      id = "weapon_" .. name,
+      title = name:gsub("_[sl]mg$", ""):pretty(),
+      callback = "NWC_setup_" .. name,
       menu_id = menu_id_weapons,
       localized = false,
       priority = priority
