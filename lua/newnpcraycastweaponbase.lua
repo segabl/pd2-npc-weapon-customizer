@@ -28,12 +28,13 @@ function NewNPCRaycastWeaponBase:setup(...)
     
     if not NWC.tweak_setups[self._name_id] then
       tweak_data.weapon[self._name_id].sounds = tweak_data.weapon[self._original_id].sounds
-      tweak_data.weapon[self._name_id].hold = tweak_data.weapon[self._original_id].hold
-      tweak_data.weapon[self._name_id].reload = tweak_data.weapon[self._original_id].reload
-      tweak_data.weapon[self._name_id].pull_magazine_during_reload = tweak_data.weapon[self._original_id].pull_magazine_during_reload
       tweak_data.weapon[self._name_id].muzzleflash = tweak_data.weapon[self._original_id].muzzleflash
       tweak_data.weapon[self._name_id].shell_ejection = tweak_data.weapon[self._original_id].shell_ejection
-      
+      if not NWC.settings.keep_types then
+        tweak_data.weapon[self._name_id].hold = tweak_data.weapon[self._original_id].hold
+        tweak_data.weapon[self._name_id].reload = tweak_data.weapon[self._original_id].reload
+        tweak_data.weapon[self._name_id].pull_magazine_during_reload = tweak_data.weapon[self._original_id].pull_magazine_during_reload
+      end
       NWC.tweak_setups[self._name_id] = true
     end
 

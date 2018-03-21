@@ -5,5 +5,7 @@
   "NWC_menu_weapons_desc" : "Passe die NPC Waffen an",
   "NWC_menu_force_hq" : "Verwende HQ Modelle",
   "NWC_menu_force_hq_desc" : "Alle NPCs werden HQ Waffenmodelle verwenden (WARNUNG: sehr speicherintensiv!)",
+  "NWC_menu_keep_types" : "Behalte originale Animationen",
+  "NWC_menu_keep_types_desc" : "NPCs werden die originalen Nachlade- und Halteanimationen benutzen",
   "NWC_menu_select_category" : "Select category"
 }

@@ -5,6 +5,7 @@ NWC.is_client = Network:is_client()
 NWC.tweak_setups = {}
 NWC.settings = {
   force_hq = false,
+  keep_types = false,
   weapons = {
     -- additional weapons can be added in the mod's save file (NWC_settings.txt)
     -- character_tweak_data_weapon_id = { id = "weapon_tweak_data_id" }
@@ -247,12 +248,22 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     menu_id = menu_id_main,
     priority = 100
   })
+  
+  MenuHelper:AddToggle({
+    id = "keep_types",
+    title = "NWC_menu_keep_types",
+    desc = "NWC_menu_keep_types_desc",
+    callback = "NWC_toggle",
+    value = NWC.settings.keep_types,
+    menu_id = menu_id_main,
+    priority = 99
+  })
 
   MenuHelper:AddDivider({
     id = "divider",
     size = 16,
     menu_id = menu_id_main,
-    priority = 99
+    priority = 98
   })
   
   local priority = 90

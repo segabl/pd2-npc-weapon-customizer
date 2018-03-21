@@ -5,5 +5,7 @@
   "NWC_menu_weapons_desc" : "Customize NPC weapons",
   "NWC_menu_force_hq" : "Use HQ models",
   "NWC_menu_force_hq_desc" : "All NPCs will use HQ weapon models (WARNING: uses lots of resources!)",
+  "NWC_menu_keep_types" : "Keep original animations",
+  "NWC_menu_keep_types_desc" : "NPCs will use the original hold and reload animations",
   "NWC_menu_select_category" : "Select category"
 }
