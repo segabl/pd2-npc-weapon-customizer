@@ -48,6 +48,15 @@ function NWC:check_weapon(weapon)
   return weapon and weapon.id and weapon.name and tweak_data.weapon.factory[weapon.name] and true or false
 end
 
+function NWC:is_joker(unit)
+  if not alive(unit) then
+    return false
+  end
+  local u_key = unit:key()
+  local gstate = managers.groupai:state()
+  return gstate._police[u_key] and gstate._police[u_key].is_converted or false
+end
+
 function NWC:open_weapon_category_menu(category, weapon)
   local loadout = self.settings.weapons[weapon] or {}
   local new_node_data = {category = category}
