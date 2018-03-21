@@ -5,6 +5,7 @@ local save_original = CopInventory.save
 function CopInventory:save(data, ...)
   save_original(self, data, ...)
   if self._equipped_selection and self:equipped_unit():base()._default_id then
+    -- change the sync index to the original weapon's index
     data.equipped_weapon_index = NWC:get_weapon_id_index(self:equipped_unit():base()._default_id)
   end
 end
@@ -12,6 +13,7 @@ end
 local _send_equipped_weapon_original = CopInventory._send_equipped_weapon
 function CopInventory:_send_equipped_weapon(...)
   if self:equipped_unit():base()._default_id then
+    -- same thing here
     local index = NWC:get_weapon_id_index(self:equipped_unit():base()._default_id)
     self._unit:network():send("set_equipped_weapon", index, "", "nil-1-0")
   else

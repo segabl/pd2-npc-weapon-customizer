@@ -6,6 +6,8 @@ NWC.tweak_setups = {}
 NWC.settings = {
   force_hq = false,
   weapons = {
+    -- additional weapons can be added in the mod's save file (NWC_settings.txt)
+    -- character_tweak_data_weapon_id = { id = "weapon_tweak_data_id" }
     beretta92 = { id = "beretta92_npc", name = "wpn_fps_pis_beretta_npc" },
     c45 = { id = "c45_npc", name = "wpn_fps_pis_1911_npc" },
     raging_bull = { id = "raging_bull_npc", name = "wpn_fps_pis_rage_npc" },

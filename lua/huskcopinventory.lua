@@ -1,5 +1,6 @@
 local _perform_switch_equipped_weapon_original = HuskCopInventory._perform_switch_equipped_weapon
 function HuskCopInventory:_perform_switch_equipped_weapon(weap_index, ...)
+  -- check received weapon index and get the mod gun that replaces the original
   local default_id = weap_index <= #tweak_data.character.weap_ids and tweak_data.character.weap_ids[weap_index]
   local weap = default_id and NWC.settings.weapons[default_id]
   if NWC:check_weapon(weap) then
@@ -17,6 +18,7 @@ function HuskCopInventory:_clbk_weapon_add(data, ...)
   if not alive(self._unit) then
     return
   end
+  -- the same thing here again
   local default_id = data.equipped_weapon_index <= #tweak_data.character.weap_ids and tweak_data.character.weap_ids[data.equipped_weapon_index]
   local weap = default_id and NWC.settings.weapons[default_id]
   if NWC:check_weapon(weap) then

@@ -6,6 +6,7 @@ function GroupAIStateBase:_set_converted_police(u_key, unit, ...)
     return
   end
   
+  -- changing joker's guns here so it works both as host and client
   local _, weap, default_id = unit:base():default_weapon_name()
   if NWC:check_weapon(weap) then
     local damage = tweak_data.weapon[weap.id].DAMAGE

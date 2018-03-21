@@ -6,6 +6,7 @@ end
 
 local use_thq_original = NewNPCRaycastWeaponBase.use_thq
 function NewNPCRaycastWeaponBase:use_thq(...)
+  -- change NPC weapons to third person (except for jokers)
   if self._force_tp == nil then
     self._force_tp = NWC.npc_gun_added and not NWC.npc_gun_added.is_joker and not NWC.settings.force_hq
   end
@@ -19,6 +20,7 @@ local setup_original = NewNPCRaycastWeaponBase.setup
 function NewNPCRaycastWeaponBase:setup(...)
   setup_original(self, ...)
 
+  -- adjust the stats of the newly added NPC weapon, it needs to point to the tweak data of the original gun
   if NWC.npc_gun_added then
     self._default_id = NWC.npc_gun_added.default_id
     self._original_id = self._name_id
