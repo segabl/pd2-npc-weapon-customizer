@@ -22,7 +22,7 @@ function NewNPCRaycastWeaponBase:setup(...)
 
   -- adjust the stats of the newly added NPC weapon, it needs to point to the tweak data of the original gun
   if NWC.npc_gun_added then
-    self._default_id = NWC.npc_gun_added.default_id
+    self._sync_index = NWC.npc_gun_added.sync_index
     self._original_id = self._name_id
     self._name_id = NWC.npc_gun_added.id
     

@@ -1,10 +1,9 @@
 local _perform_switch_equipped_weapon_original = HuskCopInventory._perform_switch_equipped_weapon
 function HuskCopInventory:_perform_switch_equipped_weapon(weap_index, ...)
   -- check received weapon index and get the mod gun that replaces the original
-  local default_id = weap_index <= #tweak_data.character.weap_ids and tweak_data.character.weap_ids[weap_index]
-  local weap = default_id and NWC.settings.weapons[default_id]
+  local weap = NWC.settings.weapons[weap_index]
   if NWC:check_weapon(weap) then
-    NWC.npc_gun_added = { id = weap.id, default_id = default_id, unit = self._unit }
+    NWC.npc_gun_added = { id = weap.id, sync_index = weap_index, unit = self._unit }
     self._unit:inventory():add_unit_by_factory_blueprint(weap.name, true, true, weap.blueprint or tweak_data.weapon.factory[weap.name].default_blueprint, weap.cosmetics)
     NWC.npc_gun_added = nil
   else
@@ -19,10 +18,9 @@ function HuskCopInventory:_clbk_weapon_add(data, ...)
     return
   end
   -- the same thing here again
-  local default_id = data.equipped_weapon_index <= #tweak_data.character.weap_ids and tweak_data.character.weap_ids[data.equipped_weapon_index]
-  local weap = default_id and NWC.settings.weapons[default_id]
+  local weap = NWC.settings.weapons[data.equipped_weapon_index]
   if NWC:check_weapon(weap) then
-    NWC.npc_gun_added = { id = weap.id, default_id = default_id, unit = self._unit }
+    NWC.npc_gun_added = { id = weap.id, sync_index = data.equipped_weapon_index, unit = self._unit }
     self._unit:inventory():add_unit_by_factory_blueprint(weap.name, true, true, weap.blueprint or tweak_data.weapon.factory[weap.name].default_blueprint, weap.cosmetics)
     NWC.npc_gun_added = nil
   else
