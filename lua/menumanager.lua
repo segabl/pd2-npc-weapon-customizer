@@ -116,14 +116,12 @@ function NWC:populate_weapons(weapon, data, gui)
   local loadout = self.settings.weapons[weapon] or {}
   for k, v in ipairs(data) do
     local tweak = tweak_data.weapon[v.name]
-    v.equipped = loadout.slot == v.slot and loadout.category == v.category
-    if v.equipped then
-      v.buttons = {"w_unequip"}
-    elseif not v.empty_slot then
-      v.buttons = {"w_equip"}
-    end
+    v.equipped = not v.locked_slot and not v.empty_slot and loadout.slot == v.slot and loadout.category == v.category and v.name
+    v.unlocked = true
+    v.lock_texture = nil
+    v.lock_text = nil
     v.comparision_data = nil
-    v.mini_icons = nil
+    v.buttons = not v.empty_slot and {v.equipped and "w_unequip" or "w_equip", "w_mod", "w_preview", "w_sell"} or {v.locked_slot and "ew_unlock" or "ew_buy"}
   end
 end
 
