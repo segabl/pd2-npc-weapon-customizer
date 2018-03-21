@@ -15,9 +15,12 @@ NWC.settings = {
     m4 = { id = "m4_npc", name = "wpn_fps_ass_m4_npc" },
     ak47 = { id = "ak47_npc", name = "wpn_fps_ass_74_npc" },
     r870 = { id = "r870_npc", name = "wpn_fps_shot_r870_npc" },
+    mossberg = { id = "mossberg_npc", name = "wpn_fps_shot_huntsman_npc" },
     mp5 = { id = "mp5_npc", name = "wpn_fps_smg_mp5_npc" },
     mp5_tactical = { id = "mp5_tactical_npc", name = "wpn_fps_smg_mp5_npc" },
+    mp9 = { id = "mp9_npc", name = "wpn_fps_smg_mp9_npc" },
     mac11 = { id = "mac11_npc", name = "wpn_fps_smg_mac10_npc" },
+    m14_sniper_npc = { id = "m14_sniper_npc", name = "wpn_fps_snp_msr_npc" },
     saiga = { id = "saiga_npc", name = "wpn_fps_shot_saiga_npc" },
     m249 = { id = "m249_npc", name = "wpn_fps_lmg_m249_npc" },
     benelli = { id = "benelli_npc", name = "wpn_fps_sho_ben_npc" },
@@ -25,12 +28,16 @@ NWC.settings = {
     ump = { id = "ump_npc", name = "wpn_fps_smg_schakal_npc" },
     scar_murky = { id = "scar_npc", name = "wpn_fps_ass_scar_npc" },
     rpk_lmg = { id = "rpk_lmg_npc", name = "wpn_fps_lmg_rpk_npc" },
+    svd_snp = { id = "svd_snp_npc", name = "wpn_fps_ass_flint_npc" },
     akmsu_smg = { id = "akmsu_smg_npc", name = "wpn_fps_smg_akmsu_npc" },
     asval_smg = { id = "asval_smg_npc", name = "wpn_fps_ass_asval_npc" },
+    sr2_smg = { id = "sr2_smg_npc", name = "wpn_fps_smg_sr2_npc" },
     ak47_ass = { id = "ak47_ass_npc", name = "wpn_fps_ass_74_npc" },
     x_c45 = { id = "x_c45_npc", name = "wpn_fps_x_1911_npc" },
     sg417 = { id = "contraband_npc", name = "wpn_fps_ass_contraband_npc" },
-    mini = { id = "mini_npc", name = "wpn_fps_lmg_m134_npc" }
+    svdsil_snp = { id = "svdsil_snp_npc", name = "wpn_fps_ass_flint_npc" },
+    mini = { id = "mini_npc", name = "wpn_fps_lmg_m134_npc" },
+    heavy_zeal_sniper = { id = "heavy_snp_npc", name = "wpn_fps_snp_msr_npc" }
   }
 }
 
@@ -274,7 +281,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     
     MenuHelper:AddButton({
       id = "weapon_" .. name,
-      title = name:gsub("_[sl]mg$", ""):pretty(),
+      title = name:pretty(),
       callback = "NWC_setup_" .. name,
       menu_id = menu_id_weapons,
       localized = false,
