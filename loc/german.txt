@@ -6,6 +6,8 @@
   "NWC_menu_force_hq" : "Verwende HQ Modelle",
   "NWC_menu_force_hq_desc" : "Alle NPCs werden HQ Waffenmodelle verwenden (WARNUNG: sehr speicherintensiv!)",
   "NWC_menu_keep_types" : "Behalte originale Animationen",
-  "NWC_menu_keep_types_desc" : "NPCs werden die originalen Nachlade- und Halteanimationen benutzen",
+  "NWC_menu_keep_types_desc" : "Waffen werden die originalen Nachlade- und Halteanimationen verwenden",
+  "NWC_menu_keep_sounds" : "Behalte originale Sounds",
+  "NWC_menu_keep_sounds_desc" : "Waffen werden die originalen Schuss-Sounds verwenden (Sniper verwenden immer die originalen)",
   "NWC_menu_select_category" : "Select category"
 }

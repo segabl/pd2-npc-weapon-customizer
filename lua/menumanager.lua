@@ -6,6 +6,7 @@ NWC.tweak_setups = {}
 NWC.settings = {
   force_hq = false,
   keep_types = false,
+  keep_sounds = false,
   weapons = {
     -- additional weapons can be added in the mod's save file (NWC_settings.txt)
     -- character_tweak_data_weapon_id = { id = "weapon_tweak_data_id" }
@@ -261,6 +262,16 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     value = NWC.settings.keep_types,
     menu_id = menu_id_main,
     priority = 99
+  })
+  
+  MenuHelper:AddToggle({
+    id = "keep_sounds",
+    title = "NWC_menu_keep_sounds",
+    desc = "NWC_menu_keep_sounds_desc",
+    callback = "NWC_toggle",
+    value = NWC.settings.keep_sounds,
+    menu_id = menu_id_main,
+    priority = 98
   })
 
   MenuHelper:AddDivider({

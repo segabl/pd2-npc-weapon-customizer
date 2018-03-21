@@ -6,6 +6,8 @@
   "NWC_menu_force_hq" : "Use HQ models",
   "NWC_menu_force_hq_desc" : "All NPCs will use HQ weapon models (WARNING: uses lots of resources!)",
   "NWC_menu_keep_types" : "Keep original animations",
-  "NWC_menu_keep_types_desc" : "NPCs will use the original hold and reload animations",
+  "NWC_menu_keep_types_desc" : "Weapons will use the original hold and reload animations",
+  "NWC_menu_keep_sounds" : "Keep original sounds",
+  "NWC_menu_keep_sounds_desc" : "Weapons will play the original firing sounds (Snipers always play the original ones)",
   "NWC_menu_select_category" : "Select category"
 }

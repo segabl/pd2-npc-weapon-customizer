@@ -31,7 +31,7 @@ function NewNPCRaycastWeaponBase:setup(...)
     end
     
     if not NWC.tweak_setups[self._name_id] then
-      if not tweak_data.weapon[self._name_id].sounds.prefix:match("sniper_npc") then
+      if not NWC.settings.keep_sounds and not tweak_data.weapon[self._name_id].sounds.prefix:match("sniper_npc") then
         tweak_data.weapon[self._name_id].sounds = tweak_data.weapon[self._original_id].sounds
       end
       tweak_data.weapon[self._name_id].muzzleflash = tweak_data.weapon[self._original_id].muzzleflash
