@@ -3,6 +3,8 @@
   "NWC_menu_main_desc" : "Passe das Aussehen der NPC Waffen an",
   "NWC_menu_weapons_name" : "Bearbeite Waffen",
   "NWC_menu_weapons_desc" : "Passe die NPC Waffen an",
+  "NWC_menu_add_animations" : "Verwende Schuss-Animationen",
+  "NWC_menu_add_animations_desc" : "Waffen werden Schuss-Animationen abspielen (wenn verfügbar)",
   "NWC_menu_force_hq" : "Verwende HQ Modelle",
   "NWC_menu_force_hq_desc" : "Alle NPCs werden HQ Waffenmodelle verwenden (WARNUNG: sehr speicherintensiv!)",
   "NWC_menu_keep_types" : "Behalte originale Animationen",

@@ -4,6 +4,7 @@ NWC.save_path = SavePath
 NWC.is_client = Network:is_client()
 NWC.tweak_setups = {}
 NWC.settings = {
+  add_animations = true,
   force_hq = false,
   keep_types = false,
   keep_sounds = false,
@@ -245,13 +246,23 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
   end
 
   MenuHelper:AddToggle({
+    id = "add_animations",
+    title = "NWC_menu_add_animations",
+    desc = "NWC_menu_add_animations_desc",
+    callback = "NWC_toggle",
+    value = NWC.settings.add_animations,
+    menu_id = menu_id_main,
+    priority = 100
+  })
+  
+  MenuHelper:AddToggle({
     id = "force_hq",
     title = "NWC_menu_force_hq",
     desc = "NWC_menu_force_hq_desc",
     callback = "NWC_toggle",
     value = NWC.settings.force_hq,
     menu_id = menu_id_main,
-    priority = 100
+    priority = 99
   })
   
   MenuHelper:AddToggle({
@@ -261,7 +272,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     callback = "NWC_toggle",
     value = NWC.settings.keep_types,
     menu_id = menu_id_main,
-    priority = 99
+    priority = 98
   })
   
   MenuHelper:AddToggle({
@@ -271,14 +282,14 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     callback = "NWC_toggle",
     value = NWC.settings.keep_sounds,
     menu_id = menu_id_main,
-    priority = 98
+    priority = 97
   })
 
   MenuHelper:AddDivider({
     id = "divider",
     size = 16,
     menu_id = menu_id_main,
-    priority = 98
+    priority = 90
   })
   
   local priority = 90
