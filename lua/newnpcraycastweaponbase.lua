@@ -16,11 +16,29 @@ function NewNPCRaycastWeaponBase:use_thq(...)
   return use_thq_original(self, ...)
 end
 
--- add weapon fire animation
+-- add weapon firing animation
 local fire_original = NewNPCRaycastWeaponBase.fire
 function NewNPCRaycastWeaponBase:fire(...)
   local result = fire_original(self, ...)
-  if result and NWC.settings.add_animations then
+  if NWC.settings.add_animations then
+    self:tweak_data_anim_play("fire")
+  end
+  return result
+end
+
+local fire_blank_original = NewNPCRaycastWeaponBase.fire_blank
+function NewNPCRaycastWeaponBase:fire_blank(...)
+  local result = fire_blank_original(self, ...)
+  if NWC.settings.add_animations then
+    self:tweak_data_anim_play("fire")
+  end
+  return result
+end
+
+local auto_fire_blank_original = NewNPCRaycastWeaponBase.auto_fire_blank
+function NewNPCRaycastWeaponBase:auto_fire_blank(...)
+  local result = auto_fire_blank_original(self, ...)
+  if NWC.settings.add_animations then
     self:tweak_data_anim_play("fire")
   end
   return result
