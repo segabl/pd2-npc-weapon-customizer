@@ -11,5 +11,6 @@
   "NWC_menu_keep_types_desc" : "Waffen werden die originalen Nachlade- und Halteanimationen verwenden",
   "NWC_menu_keep_sounds" : "Behalte originale Sounds",
   "NWC_menu_keep_sounds_desc" : "Waffen werden die originalen Schuss-Sounds verwenden (Sniper verwenden immer die originalen)",
-  "NWC_menu_select_category" : "Select category"
+  "NWC_menu_select_category" : "Select category",
+  "NWC_menu_locked_slot" : "Nicht kompatibel, da keine NPC Version dieser Waffe existiert!"
 }

@@ -11,5 +11,6 @@
   "NWC_menu_keep_types_desc" : "Weapons will use the original hold and reload animations",
   "NWC_menu_keep_sounds" : "Keep original sounds",
   "NWC_menu_keep_sounds_desc" : "Weapons will play the original firing sounds (Snipers always play the original ones)",
-  "NWC_menu_select_category" : "Select category"
+  "NWC_menu_select_category" : "Select category",
+  "NWC_menu_locked_slot" : "Not compatible, as there is no NPC version of this weapon!"
 }

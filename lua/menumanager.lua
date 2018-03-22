@@ -123,17 +123,30 @@ function NWC:create_pages(new_node_data, weapon, identifier, selected_slot, rows
   return selected_tab
 end
 
+function NWC:get_npc_version(weapon_id)
+  local factory_id = weapon_id and managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id)
+  local tweak = factory_id and tweak_data.weapon.factory[factory_id .. "_npc"]
+  return tweak and (not tweak.custom or DB:has(Idstring("unit"), tweak.unit:id())) and factory_id .. "_npc"
+end
+
 function NWC:populate_weapons(weapon, data, gui)
   gui:populate_weapon_category_new(data)
   local loadout = self.settings.weapons[weapon] or {}
   for k, v in ipairs(data) do
-    local tweak = tweak_data.weapon[v.name]
-    v.equipped = not v.locked_slot and not v.empty_slot and loadout.slot == v.slot and loadout.category == v.category and v.name
-    v.unlocked = true
-    v.lock_texture = nil
-    v.lock_text = nil
-    v.comparision_data = nil
-    v.buttons = not v.empty_slot and {v.equipped and "w_unequip" or "w_equip", "w_mod", "w_preview", "w_sell"} or {v.locked_slot and "ew_unlock" or "ew_buy"}
+    local npc_version = v.empty_slot or NWC:get_npc_version(v.name)
+    if npc_version then
+      v.equipped = not v.locked_slot and not v.empty_slot and loadout.slot == v.slot and loadout.category == v.category and npc_version == loadout.name
+      v.unlocked = true
+      v.lock_texture = v.locked_slot and v.lock_texture
+      v.lock_text = nil
+      v.comparision_data = nil
+      v.buttons = v.empty_slot and {v.locked_slot and "ew_unlock" or "ew_buy"} or {v.equipped and "w_unequip" or "w_equip", "w_mod", "w_preview", "w_sell"}
+    else
+      v.buttons = {}
+      v.unlocked = false
+      v.lock_texture = "guis/textures/pd2/lock_incompatible"
+      v.lock_text = managers.localization:text("NWC_menu_locked_slot")
+    end
   end
 end
 
