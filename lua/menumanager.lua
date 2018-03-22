@@ -67,23 +67,30 @@ function NWC:is_joker(unit)
   return gstate._police[u_key] and gstate._police[u_key].is_converted or false
 end
 
+function NWC:get_npc_version(weapon_id)
+  local factory_id = weapon_id and managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id)
+  local tweak = factory_id and tweak_data.weapon.factory[factory_id .. "_npc"]
+  return tweak and (not tweak.custom or DB:has(Idstring("unit"), tweak.unit:id())) and factory_id .. "_npc"
+end
+
 function NWC:open_weapon_category_menu(category, weapon)
   local loadout = self.settings.weapons[weapon] or {}
-  local new_node_data = {category = category}
-  local selected_tab = self:create_pages(new_node_data, weapon, "weapon", loadout.slot, tweak_data.gui.WEAPON_ROWS_PER_PAGE, tweak_data.gui.WEAPON_COLUMNS_PER_PAGE, tweak_data.gui.MAX_WEAPON_PAGES, loadout.category or "primaries")
-  new_node_data.can_move_over_tabs = true
-  new_node_data.selected_tab = selected_tab
-  new_node_data.scroll_tab_anywhere = true
-  new_node_data.hide_detection_panel = true
-  new_node_data.custom_callback = {
-    w_equip = callback(self, self, "select_weapon", weapon),
-    w_unequip = callback(self, self, "select_weapon", weapon)
+  local new_node_data = {
+    category = category,
+    can_move_over_tabs = true,
+    scroll_tab_anywhere = true,
+    hide_detection_panel = true,
+    custom_callback = {
+      w_equip = callback(self, self, "select_weapon", weapon),
+      w_unequip = callback(self, self, "select_weapon", weapon)
+    },
+    topic_id = "bm_menu_" .. category
   }
-  new_node_data.topic_id = "bm_menu_" .. category
+  new_node_data.selected_tab = self:create_pages(new_node_data, weapon, "weapon", tweak_data.gui.WEAPON_ROWS_PER_PAGE, tweak_data.gui.WEAPON_COLUMNS_PER_PAGE, tweak_data.gui.MAX_WEAPON_PAGES)
   managers.menu:open_node("blackmarket_node", {new_node_data})
 end
 
-function NWC:create_pages(new_node_data, weapon, identifier, selected_slot, rows, columns, max_pages)
+function NWC:create_pages(new_node_data, weapon, identifier, rows, columns, max_pages)
   local category = new_node_data.category
   local loadout = self.settings.weapons[weapon] or {}
   rows = rows or 3
@@ -99,7 +106,7 @@ function NWC:create_pages(new_node_data, weapon, identifier, selected_slot, rows
     for i = start_i, items_per_page * page, 1 do
       item_data[index] = i
       index = index + 1
-      if i == selected_slot and category == loadout.category then
+      if i == loadout.slot and category == loadout.category then
         selected_tab = page
       end
     end
@@ -121,12 +128,6 @@ function NWC:create_pages(new_node_data, weapon, identifier, selected_slot, rows
     })
   end
   return selected_tab
-end
-
-function NWC:get_npc_version(weapon_id)
-  local factory_id = weapon_id and managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id)
-  local tweak = factory_id and tweak_data.weapon.factory[factory_id .. "_npc"]
-  return tweak and (not tweak.custom or DB:has(Idstring("unit"), tweak.unit:id())) and factory_id .. "_npc"
 end
 
 function NWC:populate_weapons(weapon, data, gui)
@@ -158,7 +159,7 @@ function NWC:select_weapon(weapon, data, gui)
     local crafted = managers.blackmarket:get_crafted_category_slot(data.category, data.slot)
     loadout.name = crafted.factory_id .. "_npc"
     loadout.blueprint = crafted.blueprint
-    loadout.cosmetics = crafted.cosmetics
+    loadout.cosmetics = crafted.cosmetics and { id = crafted.cosmetics.id, quality = crafted.cosmetics.quality }
     loadout.slot = data.slot
     loadout.category = data.category
   end
@@ -305,6 +306,15 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     priority = 90
   })
   
+  local function weapon_name(name)
+    local change = {
+      mini = "minigun",
+      ak47_ass = "ak47 russian",
+      scar_murky = "scar"
+    }
+    name = change[name] or name
+    return name:gsub("_[ls]mg$", ""):gsub("_snp$", ""):gsub("_npc$", ""):pretty()
+  end
   local priority = 90
   for _, name in ipairs(table.map_keys(NWC.settings.weapons)) do
     
@@ -316,7 +326,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     
     MenuHelper:AddButton({
       id = "weapon_" .. name,
-      title = name:pretty(),
+      title = weapon_name(name),
       callback = "NWC_setup_" .. name,
       menu_id = menu_id_weapons,
       localized = false,
