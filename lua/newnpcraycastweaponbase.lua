@@ -54,8 +54,8 @@ function NewNPCRaycastWeaponBase:setup(...)
     self._original_id = self._name_id
     self._name_id = NWC.npc_gun_added.id
     
-    if NWC.npc_gun_added.unit:inventory()._chk_spawn_shield then
-      NWC.npc_gun_added.unit:inventory():_chk_spawn_shield(self._unit)
+    if NWC.npc_gun_added.unit:inventory()._shield_unit_name then
+      CopInventory._chk_spawn_shield(NWC.npc_gun_added.unit:inventory(), self._unit)
     end
     
     if not NWC.tweak_setups[self._name_id] then
@@ -64,7 +64,7 @@ function NewNPCRaycastWeaponBase:setup(...)
       end
       tweak_data.weapon[self._name_id].muzzleflash = tweak_data.weapon[self._original_id].muzzleflash
       tweak_data.weapon[self._name_id].shell_ejection = tweak_data.weapon[self._original_id].shell_ejection
-      if not NWC.settings.keep_types and not NWC.npc_gun_added.unit:inventory()._shield_unit then
+      if not NWC.settings.keep_types and not NWC.npc_gun_added.unit:inventory()._shield_unit_name then
         tweak_data.weapon[self._name_id].hold = tweak_data.weapon[self._original_id].hold
         tweak_data.weapon[self._name_id].reload = tweak_data.weapon[self._original_id].reload
         tweak_data.weapon[self._name_id].pull_magazine_during_reload = tweak_data.weapon[self._original_id].pull_magazine_during_reload
