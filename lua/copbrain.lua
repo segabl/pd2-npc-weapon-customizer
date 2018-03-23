@@ -13,7 +13,7 @@ function CopBrain:convert_to_criminal(...)
     end
   
     NWC.npc_gun_added = { id = weap.id, sync_index = sync_index, unit = self._unit }
-    TeamAIInventory.add_unit_by_factory_blueprint(self._unit:inventory(), weap.name, true, true, weap.blueprint or tweak_data.weapon.factory[weap.name].default_blueprint, weap.cosmetics)
+    self._unit:inventory():add_unit_by_factory_blueprint(weap.name, true, true, weap.blueprint or tweak_data.weapon.factory[weap.name].default_blueprint, weap.cosmetics)
     NWC.npc_gun_added = nil
     
     local weapon_unit = self._unit:inventory():equipped_unit()

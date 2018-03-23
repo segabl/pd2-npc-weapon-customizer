@@ -168,7 +168,7 @@ function NWC:select_weapon(weapon, data, gui)
 end
 
 function NWC:show_weapon_selection(weapon)
-  local menu_title = managers.localization:text("NWC_menu_select_category")
+  local menu_title = managers.localization:text("menu_challenge_choose_weapon_category")
   local menu_message = ""
   local menu_options = {
     {
