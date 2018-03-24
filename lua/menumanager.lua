@@ -226,7 +226,6 @@ function NWC:show_weapon_selection(title, weapon)
     {
       text = managers.localization:text(self.settings.weapons[weapon] and self.settings.weapons[weapon].random_mods and "NWC_menu_disable_random_mods" or "NWC_menu_enable_random_mods"),
       callback = function ()
-        self:show_weapon_random_mods(title, weapon)
         self.settings.weapons[weapon] = self.settings.weapons[weapon] or {}
         self.settings.weapons[weapon].random_mods = not self.settings.weapons[weapon].random_mods
         self:show_weapon_selection(weapon)
