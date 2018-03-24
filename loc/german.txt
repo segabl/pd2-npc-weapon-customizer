@@ -11,5 +11,12 @@
   "NWC_menu_keep_types_desc" : "Waffen werden die originalen Nachlade- und Halteanimationen verwenden",
   "NWC_menu_keep_sounds" : "Behalte originale Sounds",
   "NWC_menu_keep_sounds_desc" : "Waffen werden die originalen Schuss-Sounds verwenden (Sniper verwenden immer die originalen)",
-  "NWC_menu_locked_slot" : "Nicht kompatibel, da keine NPC Version dieser Waffe existiert!"
+  "NWC_menu_locked_slot" : "Nicht kompatibel, da keine NPC Version dieser Waffe existiert!",
+  "NWC_menu_weapon_message" : "Du benutzt momentan $WEAPON. Was möchtest du tun?",
+  "NWC_menu_weapon_message_default" : "Du benutzt momentan die Mod Standardeinstellung. Was möchtest du tun?",
+  "NWC_menu_select_from_primaries" : "Aus Primärwaffen wählen",
+  "NWC_menu_select_from_secondaries" : "Aus Sekundärwaffen wählen",
+  "NWC_menu_use_default" : "Mod Standardeinstellung benutzen",
+  "NWC_menu_enable_random_mods" : "Zufällige Waffenmodifikationen aktivieren",
+  "NWC_menu_disable_random_mods" : "Zufällige Waffenmodifikationen deaktivieren"
 }

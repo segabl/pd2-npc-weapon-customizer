@@ -3,7 +3,7 @@ function CopBrain:convert_to_criminal(...)
   convert_to_criminal_original(self, ...)
 
   local _, weap, sync_index = self._unit:base():default_weapon_name()
-  if NWC:check_weapon(weap) then
+  if weap then
     -- switch default gun to customized gun
     local damage = tweak_data.weapon[weap.id].DAMAGE
     local equipped_w_selection = self._unit:inventory():equipped_selection()

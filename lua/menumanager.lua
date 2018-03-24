@@ -3,6 +3,7 @@ NWC.mod_path = ModPath
 NWC.save_path = SavePath
 NWC.is_client = Network:is_client()
 NWC.tweak_setups = {}
+NWC.dropable_mods = {}
 NWC.settings = {
   add_animations = true,
   force_hq = false,
@@ -12,7 +13,7 @@ NWC.settings = {
     -- additional weapons can be added in the mod's save file (NWC_settings.txt)
     -- character_tweak_data_weapon_id = { id = "weapon_tweak_data_id" }
     beretta92 = { id = "beretta92_npc", name = "wpn_fps_pis_beretta_npc" },
-    c45 = { id = "c45_npc", name = "wpn_fps_pis_1911_npc" },
+    c45 = { id = "c45_npc", name = "wpn_fps_pis_g17_npc" },
     raging_bull = { id = "raging_bull_npc", name = "wpn_fps_pis_rage_npc" },
     m4 = { id = "m4_npc", name = "wpn_fps_ass_m4_npc" },
     ak47 = { id = "ak47_npc", name = "wpn_fps_ass_74_npc" },
@@ -30,14 +31,14 @@ NWC.settings = {
     ump = { id = "ump_npc", name = "wpn_fps_smg_schakal_npc" },
     scar_murky = { id = "scar_npc", name = "wpn_fps_ass_scar_npc" },
     rpk_lmg = { id = "rpk_lmg_npc", name = "wpn_fps_lmg_rpk_npc" },
-    svd_snp = { id = "svd_snp_npc", name = "wpn_fps_ass_flint_npc" },
+    svd_snp = { id = "svd_snp_npc", name = "wpn_fps_snp_siltstone_npc" },
     akmsu_smg = { id = "akmsu_smg_npc", name = "wpn_fps_smg_akmsu_npc" },
     asval_smg = { id = "asval_smg_npc", name = "wpn_fps_ass_asval_npc" },
     sr2_smg = { id = "sr2_smg_npc", name = "wpn_fps_smg_sr2_npc" },
     ak47_ass = { id = "ak47_ass_npc", name = "wpn_fps_ass_74_npc" },
     x_c45 = { id = "x_c45_npc", name = "wpn_fps_x_1911_npc" },
     sg417 = { id = "contraband_npc", name = "wpn_fps_ass_contraband_npc" },
-    svdsil_snp = { id = "svdsil_snp_npc", name = "wpn_fps_ass_flint_npc" },
+    svdsil_snp = { id = "svdsil_snp_npc", name = "wpn_fps_snp_siltstone_npc" },
     mini = { id = "mini_npc", name = "wpn_fps_lmg_m134_npc" },
     heavy_zeal_sniper = { id = "heavy_snp_npc", name = "wpn_fps_snp_msr_npc" }
   }
@@ -54,8 +55,16 @@ function NWC:get_weapon_id_index(weapon)
   return index
 end
 
-function NWC:check_weapon(weapon)
-  return weapon and weapon.id and weapon.name and tweak_data.weapon.factory[weapon.name] and true or false
+function NWC:get_weapon(weapon_id)
+  local weap = self.settings.weapons[weapon_id]
+  if not weap or not weap.id or not weap.name or not tweak_data.weapon.factory[weap.name] then
+    return
+  end
+  if weap.random_mods then
+    weap = deep_clone(weap)
+    NWC:create_random_blueprint(weap)
+  end
+  return weap
 end
 
 function NWC:is_joker(unit)
@@ -71,6 +80,25 @@ function NWC:get_npc_version(weapon_id)
   local factory_id = weapon_id and managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id)
   local tweak = factory_id and tweak_data.weapon.factory[factory_id .. "_npc"]
   return tweak and (not tweak.custom or DB:has(Idstring("unit"), tweak.unit:id())) and factory_id .. "_npc"
+end
+
+function NWC:create_random_blueprint(weapon)
+  weapon.blueprint = weapon.blueprint or tweak_data.weapon.factory[weapon.name].default_blueprint
+  if not self.dropable_mods[weapon.name] then
+    local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon.name:gsub("_npc$", ""))
+    if not weapon_id then
+      return
+    end
+    self.dropable_mods[weapon.name] = managers.blackmarket:get_dropable_mods_by_weapon_id(weapon_id)
+  end
+  for part_type, parts_data in pairs(self.dropable_mods[weapon.name]) do
+    if math.random() < 1 then
+      local part_data = table.random(parts_data)
+      if part_data then
+        managers.weapon_factory:change_part_blueprint_only(weapon.name, part_data[1], weapon.blueprint)
+      end
+    end
+  end
 end
 
 function NWC:open_weapon_category_menu(category, weapon)
@@ -167,17 +195,42 @@ function NWC:select_weapon(weapon, data, gui)
   return gui and gui:reload()
 end
 
-function NWC:show_weapon_selection(weapon)
-  local menu_title = managers.localization:text("menu_challenge_choose_weapon_category")
-  local menu_message = ""
+function NWC:show_weapon_selection(title, weapon)
+  local menu_title = title
+  local menu_message
+  if self.settings.weapons[weapon] and self.settings.weapons[weapon].name then
+    local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(self.settings.weapons[weapon].name:gsub("_npc$", ""))
+    local replacement = tweak_data.weapon[weapon_id] and managers.localization:text(tweak_data.weapon[weapon_id].name_id) or "unknown"
+    menu_message = managers.localization:text("NWC_menu_weapon_message", { WEAPON = replacement })
+  else
+    menu_message = managers.localization:text("NWC_menu_weapon_message_default")
+  end
   local menu_options = {
     {
-      text = managers.localization:text("bm_menu_primaries"),
+      text = managers.localization:text("NWC_menu_select_from_primaries"),
       callback = function () self:open_weapon_category_menu("primaries", weapon) end
     },
     {
-      text = managers.localization:text("bm_menu_secondaries"),
+      text = managers.localization:text("NWC_menu_select_from_secondaries"),
       callback = function () self:open_weapon_category_menu("secondaries", weapon) end
+    },
+    {
+      text = managers.localization:text("NWC_menu_use_default"),
+      callback = function ()
+        self.settings.weapons[weapon] = {
+          random_mods = self.settings.weapons[weapon] and self.settings.weapons[weapon].random_mods
+        }
+      end
+    },
+    {--[[seperator]]},
+    {
+      text = managers.localization:text(self.settings.weapons[weapon] and self.settings.weapons[weapon].random_mods and "NWC_menu_disable_random_mods" or "NWC_menu_enable_random_mods"),
+      callback = function ()
+        self:show_weapon_random_mods(title, weapon)
+        self.settings.weapons[weapon] = self.settings.weapons[weapon] or {}
+        self.settings.weapons[weapon].random_mods = not self.settings.weapons[weapon].random_mods
+        self:show_weapon_selection(weapon)
+      end
     },
     {--[[seperator]]},
     {
@@ -258,6 +311,10 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
   MenuCallbackHandler.NWC_toggle = function(self, item)
     NWC.settings[item:name()] = item:value() == "on"
   end
+  
+  MenuCallbackHandler.NWC_value = function(self, item)
+    NWC.settings[item:name()] = item:value()
+  end
 
   MenuHelper:AddToggle({
     id = "add_animations",
@@ -300,7 +357,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
   })
 
   MenuHelper:AddDivider({
-    id = "divider",
+    id = "divider1",
     size = 16,
     menu_id = menu_id_main,
     priority = 90
@@ -341,13 +398,13 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     }
     return NWC._weapon_names[name] or name:pretty()
   end
-  local priority = 90
+  local priority = 50
   for _, name in ipairs(table.map_keys(NWC.settings.weapons, function (a, b) return weapon_name(a) < weapon_name(b) end)) do
     
     priority = priority - 1
     
     MenuCallbackHandler["NWC_setup_" .. name] = function (self)
-      NWC:show_weapon_selection(name)
+      NWC:show_weapon_selection(weapon_name(name), name)
     end
     
     MenuHelper:AddButton({

@@ -11,5 +11,12 @@
   "NWC_menu_keep_types_desc" : "Weapons will use the original hold and reload animations",
   "NWC_menu_keep_sounds" : "Keep original sounds",
   "NWC_menu_keep_sounds_desc" : "Weapons will play the original firing sounds (Snipers always play the original ones)",
-  "NWC_menu_locked_slot" : "Not compatible, as there is no NPC version of this weapon!"
+  "NWC_menu_locked_slot" : "Not compatible, as there is no NPC version of this weapon!",
+  "NWC_menu_weapon_message" : "You are currently using the $WEAPON. What do you want to do?",
+  "NWC_menu_weapon_message_default" : "You are currently using the mod's default. What do you want to do?",
+  "NWC_menu_select_from_primaries" : "Select from primaries",
+  "NWC_menu_select_from_secondaries" : "Select from secondaries",
+  "NWC_menu_use_default" : "Use mod default",
+  "NWC_menu_enable_random_mods" : "Enable random weapon mods",
+  "NWC_menu_disable_random_mods" : "Disable random weapon mods"
 }
