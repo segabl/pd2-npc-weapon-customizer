@@ -228,7 +228,7 @@ function NWC:show_weapon_selection(title, weapon)
       callback = function ()
         self.settings.weapons[weapon] = self.settings.weapons[weapon] or {}
         self.settings.weapons[weapon].random_mods = not self.settings.weapons[weapon].random_mods
-        self:show_weapon_selection(weapon)
+        self:show_weapon_selection(title, weapon)
       end
     },
     {--[[seperator]]},
