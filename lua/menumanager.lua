@@ -307,16 +307,42 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
   })
   
   local function weapon_name(name)
-    local change = {
-      mini = "minigun",
-      ak47_ass = "ak47 russian",
-      scar_murky = "scar"
+    local loc = managers.localization
+    NWC._weapon_names = NWC._weapon_names or {
+      beretta92 = loc:text("bm_w_b92fs"),
+      c45 = loc:text("bm_w_glock_17"),
+      raging_bull = loc:text("bm_w_raging_bull"),
+      m4 = loc:text("bm_w_m4"),
+      ak47 = loc:text("bm_w_ak74"),
+      r870 = loc:text("bm_w_r870"),
+      mossberg = loc:text("bm_w_huntsman"),
+      mp5 = loc:text("bm_w_mp5"),
+      mp5_tactical = loc:text("bm_w_mp5") .. " (Cloaker)",
+      mp9 = loc:text("bm_w_mp9"),
+      mac11 = loc:text("bm_w_mac10"),
+      m14_sniper_npc = loc:text("bm_w_g3") .. " (Sniper)",
+      saiga = loc:text("bm_w_saiga"),
+      m249 = loc:text("bm_w_m249"),
+      benelli = loc:text("bm_w_benelli"),
+      g36 = loc:text("bm_w_g36"),
+      ump = loc:text("bm_w_schakal"),
+      scar_murky = loc:text("bm_w_scar"),
+      rpk_lmg = loc:text("bm_w_rpk"),
+      svd_snp = loc:text("bm_w_siltstone") .. " (Russian Sniper)",
+      akmsu_smg = loc:text("bm_w_akmsu"),
+      asval_smg = loc:text("bm_w_asval"),
+      sr2_smg = loc:text("bm_w_sr2"),
+      ak47_ass = loc:text("bm_w_ak74") .. " (Russian)",
+      x_c45 = loc:text("bm_w_x_g17"),
+      sg417 = loc:text("bm_w_contraband"),
+      svdsil_snp = loc:text("bm_w_siltstone") .. " (Mobster Sniper)",
+      mini = loc:text("bm_w_m134"),
+      heavy_zeal_sniper = loc:text("bm_w_g3") .. " (ZEAL Sniper)"
     }
-    name = change[name] or name
-    return name:gsub("_[ls]mg$", ""):gsub("_snp$", ""):gsub("_npc$", ""):pretty()
+    return NWC._weapon_names[name] or name:pretty()
   end
   local priority = 90
-  for _, name in ipairs(table.map_keys(NWC.settings.weapons)) do
+  for _, name in ipairs(table.map_keys(NWC.settings.weapons, function (a, b) return weapon_name(a) < weapon_name(b) end)) do
     
     priority = priority - 1
     
