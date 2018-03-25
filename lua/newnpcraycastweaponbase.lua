@@ -7,10 +7,16 @@ end
 local use_thq_original = NewNPCRaycastWeaponBase.use_thq
 function NewNPCRaycastWeaponBase:use_thq(...)
   -- change NPC weapons to third person (except for jokers)
-  if self._force_tp == nil then
-    self._force_tp = NWC.npc_gun_added and not NWC:is_joker(NWC.npc_gun_added.unit) and not NWC.settings.force_hq
+  if self._use_third_person == nil then
+    if not NWC.npc_gun_added then
+      self._use_third_person = false
+    elseif NWC.settings.force_hq then
+      self._use_third_person = false
+    else
+      self._use_third_person = not (NWC:is_joker(NWC.npc_gun_added.unit) and NWC.settings.jokers_hq) and not (NWC:is_special(NWC.npc_gun_added.unit) and NWC.settings.specials_hq)
+    end
   end
-  if self._force_tp then
+  if self._use_third_person then
     return false
   end
   return use_thq_original(self, ...)
