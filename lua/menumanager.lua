@@ -496,6 +496,8 @@ function NWC:change_hq_menu_setting(item)
 end
 
 function NWC:refresh_menu()
+  self.menu_weapon_settings:SetEnabled(not Utils:IsInGameState())
+
   for _, weap_id in ipairs(self.sorted_weap_ids) do
     
     local weap = self:get_weapon(weap_id)
