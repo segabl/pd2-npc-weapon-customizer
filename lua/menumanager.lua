@@ -57,6 +57,14 @@ function NWC:get_sync_index(weapon)
   return index
 end
 
+function NWC:get_weapon_by_tweak_id(tweak_id)
+  for k, v in pairs(self.weapon_info) do
+    if v.id == tweak_id then
+      return self:get_weapon(k)
+    end
+  end
+end
+
 function NWC:get_weapon(weap_id)
   if self.weapons[weap_id] == nil then
     local weapon_info = self.weapon_info[weap_id]

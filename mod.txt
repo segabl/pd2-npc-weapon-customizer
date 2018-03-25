@@ -9,6 +9,7 @@
   "updates" : [ { "identifier" : "nwc" } ],
   "hooks" : [
     { "hook_id" : "lib/managers/menumanager", "script_path" : "lua/menumanager.lua" },
+    { "hook_id" : "lib/network/handlers/unitnetworkhandler", "script_path" : "lua/unitnetworkhandler.lua" },
     { "hook_id" : "lib/units/enemies/cop/actions/full_body/copactionhurt", "script_path" : "lua/copactionhurt.lua" },
     { "hook_id" : "lib/units/enemies/cop/copbase", "script_path" : "lua/copbase.lua" },
     { "hook_id" : "lib/units/enemies/cop/copbrain", "script_path" : "lua/copbrain.lua" },
