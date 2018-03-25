@@ -4,47 +4,47 @@ NWC.save_path = SavePath
 NWC.is_client = Network:is_client()
 NWC.tweak_setups = {}
 NWC.dropable_mods = {}
+NWC.weapons = {}
+NWC.weapon_info = {
+  beretta92 = { id = "beretta92_npc", factory_id = "wpn_fps_pis_beretta_npc" },
+  c45 = { id = "c45_npc", factory_id = "wpn_fps_pis_g17_npc" },
+  raging_bull = { id = "raging_bull_npc", factory_id = "wpn_fps_pis_rage_npc" },
+  m4 = { id = "m4_npc", factory_id = "wpn_fps_ass_m4_npc" },
+  ak47 = { id = "ak47_npc", factory_id = "wpn_fps_ass_74_npc" },
+  r870 = { id = "r870_npc", factory_id = "wpn_fps_shot_r870_npc" },
+  mossberg = { id = "mossberg_npc", factory_id = "wpn_fps_shot_huntsman_npc" },
+  mp5 = { id = "mp5_npc", factory_id = "wpn_fps_smg_mp5_npc" },
+  mp5_tactical = { id = "mp5_tactical_npc", factory_id = "wpn_fps_smg_mp5_npc" },
+  mp9 = { id = "mp9_npc", factory_id = "wpn_fps_smg_mp9_npc" },
+  mac11 = { id = "mac11_npc", factory_id = "wpn_fps_smg_mac10_npc" },
+  m14_sniper_npc = { id = "m14_sniper_npc", factory_id = "wpn_fps_snp_msr_npc" },
+  saiga = { id = "saiga_npc", factory_id = "wpn_fps_shot_saiga_npc" },
+  m249 = { id = "m249_npc", factory_id = "wpn_fps_lmg_m249_npc" },
+  benelli = { id = "benelli_npc", factory_id = "wpn_fps_sho_ben_npc" },
+  g36 = { id = "g36_npc", factory_id = "wpn_fps_ass_g36_npc" },
+  ump = { id = "ump_npc", factory_id = "wpn_fps_smg_schakal_npc" },
+  scar_murky = { id = "scar_npc", factory_id = "wpn_fps_ass_scar_npc" },
+  rpk_lmg = { id = "rpk_lmg_npc", factory_id = "wpn_fps_lmg_rpk_npc" },
+  svd_snp = { id = "svd_snp_npc", factory_id = "wpn_fps_snp_siltstone_npc" },
+  akmsu_smg = { id = "akmsu_smg_npc", factory_id = "wpn_fps_smg_akmsu_npc" },
+  asval_smg = { id = "asval_smg_npc", factory_id = "wpn_fps_ass_asval_npc" },
+  sr2_smg = { id = "sr2_smg_npc", factory_id = "wpn_fps_smg_sr2_npc" },
+  ak47_ass = { id = "ak47_ass_npc", factory_id = "wpn_fps_ass_74_npc" },
+  x_c45 = { id = "x_c45_npc", factory_id = "wpn_fps_pis_x_g17_npc" },
+  sg417 = { id = "contraband_npc", factory_id = "wpn_fps_ass_contraband_npc" },
+  svdsil_snp = { id = "svdsil_snp_npc", factory_id = "wpn_fps_snp_siltstone_npc" },
+  mini = { id = "mini_npc", factory_id = "wpn_fps_lmg_m134_npc" },
+  heavy_zeal_sniper = { id = "heavy_snp_npc", factory_id = "wpn_fps_snp_msr_npc" }
+}
 NWC.settings = {
   add_animations = true,
   force_hq = false,
   keep_types = false,
   keep_sounds = false,
-  weapons = {
-    -- additional weapons can be added in the mod's save file (NWC_settings.txt)
-    -- character_tweak_data_weapon_id = { id = "weapon_tweak_data_id" }
-    beretta92 = { id = "beretta92_npc", name = "wpn_fps_pis_beretta_npc" },
-    c45 = { id = "c45_npc", name = "wpn_fps_pis_g17_npc" },
-    raging_bull = { id = "raging_bull_npc", name = "wpn_fps_pis_rage_npc" },
-    m4 = { id = "m4_npc", name = "wpn_fps_ass_m4_npc" },
-    ak47 = { id = "ak47_npc", name = "wpn_fps_ass_74_npc" },
-    r870 = { id = "r870_npc", name = "wpn_fps_shot_r870_npc" },
-    mossberg = { id = "mossberg_npc", name = "wpn_fps_shot_huntsman_npc" },
-    mp5 = { id = "mp5_npc", name = "wpn_fps_smg_mp5_npc" },
-    mp5_tactical = { id = "mp5_tactical_npc", name = "wpn_fps_smg_mp5_npc" },
-    mp9 = { id = "mp9_npc", name = "wpn_fps_smg_mp9_npc" },
-    mac11 = { id = "mac11_npc", name = "wpn_fps_smg_mac10_npc" },
-    m14_sniper_npc = { id = "m14_sniper_npc", name = "wpn_fps_snp_msr_npc" },
-    saiga = { id = "saiga_npc", name = "wpn_fps_shot_saiga_npc" },
-    m249 = { id = "m249_npc", name = "wpn_fps_lmg_m249_npc" },
-    benelli = { id = "benelli_npc", name = "wpn_fps_sho_ben_npc" },
-    g36 = { id = "g36_npc", name = "wpn_fps_ass_g36_npc" },
-    ump = { id = "ump_npc", name = "wpn_fps_smg_schakal_npc" },
-    scar_murky = { id = "scar_npc", name = "wpn_fps_ass_scar_npc" },
-    rpk_lmg = { id = "rpk_lmg_npc", name = "wpn_fps_lmg_rpk_npc" },
-    svd_snp = { id = "svd_snp_npc", name = "wpn_fps_snp_siltstone_npc" },
-    akmsu_smg = { id = "akmsu_smg_npc", name = "wpn_fps_smg_akmsu_npc" },
-    asval_smg = { id = "asval_smg_npc", name = "wpn_fps_ass_asval_npc" },
-    sr2_smg = { id = "sr2_smg_npc", name = "wpn_fps_smg_sr2_npc" },
-    ak47_ass = { id = "ak47_ass_npc", name = "wpn_fps_ass_74_npc" },
-    x_c45 = { id = "x_c45_npc", name = "wpn_fps_x_1911_npc" },
-    sg417 = { id = "contraband_npc", name = "wpn_fps_ass_contraband_npc" },
-    svdsil_snp = { id = "svdsil_snp_npc", name = "wpn_fps_snp_siltstone_npc" },
-    mini = { id = "mini_npc", name = "wpn_fps_lmg_m134_npc" },
-    heavy_zeal_sniper = { id = "heavy_snp_npc", name = "wpn_fps_snp_msr_npc" }
-  }
+  weapons = {}
 }
 
-function NWC:get_weapon_id_index(weapon)
+function NWC:get_sync_index(weapon)
   local index = 1
   for i, v in ipairs(tweak_data.character.weap_ids) do
     if v == weapon then
@@ -55,16 +55,48 @@ function NWC:get_weapon_id_index(weapon)
   return index
 end
 
-function NWC:get_weapon(weapon_id)
-  local weap = self.settings.weapons[weapon_id]
-  if not weap or not weap.id or not weap.name or not tweak_data.weapon.factory[weap.name] then
-    return
+function NWC:get_weapon(weap_id)
+  if self.weapons[weap_id] == nil then
+    local weapon_info = self.weapon_info[weap_id]
+    if not weapon_info then
+      self:clear_weapon(weap_id)
+      self.weapons[weap_id] = false
+      return
+    end
+    local weapon = self.settings.weapons[weap_id]
+    local crafted = weapon and weapon.category and weapon.slot and managers.blackmarket:get_crafted_category_slot(weapon.category, weapon.slot)
+    if crafted and self:has_npc_weapon_version(crafted.factory_id) then
+      self.weapons[weap_id] = {
+        sync_index = self:get_sync_index(weap_id),
+        id = self.weapon_info[weap_id].id,
+        factory_id = crafted.factory_id .. "_npc",
+        blueprint = crafted.blueprint,
+        cosmetics = crafted.cosmetics,
+        name = crafted.custom_name or managers.localization:text(tweak_data.weapon[crafted.weapon_id].name_id),
+        category = weapon.category,
+        slot = weapon.slot,
+      }
+    else
+      self:clear_weapon(weap_id)
+      self.weapons[weap_id] = {
+        sync_index = self:get_sync_index(weap_id),
+        id = self.weapon_info[weap_id].id,
+        factory_id = self.weapon_info[weap_id].factory_id,
+        blueprint = tweak_data.weapon.factory[self.weapon_info[weap_id].factory_id].default_blueprint
+      }
+    end
   end
-  if weap.random_mods then
-    weap = deep_clone(weap)
-    NWC:create_random_blueprint(weap)
-  end
-  return weap
+  return self.weapons[weap_id]
+end
+
+function NWC:clear_weapon(weap_id)
+  self.weapons[weap_id] = nil
+  self.settings.weapons[weap_id] = nil
+end
+
+function NWC:has_npc_weapon_version(factory_id)
+  local factory_data = factory_id and tweak_data.weapon.factory[factory_id .. "_npc"]
+  return factory_data and (not factory_data.custom or DB:has(Idstring("unit"), factory_data.unit:id()))
 end
 
 function NWC:is_joker(unit)
@@ -74,12 +106,6 @@ function NWC:is_joker(unit)
   local u_key = unit:key()
   local gstate = managers.groupai:state()
   return gstate._police[u_key] and gstate._police[u_key].is_converted or false
-end
-
-function NWC:get_npc_version(weapon_id)
-  local factory_id = weapon_id and managers.weapon_factory:get_factory_id_by_weapon_id(weapon_id)
-  local tweak = factory_id and tweak_data.weapon.factory[factory_id .. "_npc"]
-  return tweak and (not tweak.custom or DB:has(Idstring("unit"), tweak.unit:id())) and factory_id .. "_npc"
 end
 
 function NWC:create_random_blueprint(weapon)
@@ -101,26 +127,25 @@ function NWC:create_random_blueprint(weapon)
   end
 end
 
-function NWC:open_weapon_category_menu(category, weapon)
-  local loadout = self.settings.weapons[weapon] or {}
+function NWC:open_weapon_category_menu(category, weap_id)
   local new_node_data = {
     category = category,
     can_move_over_tabs = true,
     scroll_tab_anywhere = true,
     hide_detection_panel = true,
     custom_callback = {
-      w_equip = callback(self, self, "select_weapon", weapon),
-      w_unequip = callback(self, self, "select_weapon", weapon)
+      w_equip = callback(self, self, "select_weapon", weap_id),
+      w_unequip = callback(self, self, "select_weapon", weap_id)
     },
     topic_id = "bm_menu_" .. category
   }
-  new_node_data.selected_tab = self:create_pages(new_node_data, weapon, "weapon", tweak_data.gui.WEAPON_ROWS_PER_PAGE, tweak_data.gui.WEAPON_COLUMNS_PER_PAGE, tweak_data.gui.MAX_WEAPON_PAGES)
+  new_node_data.selected_tab = self:create_pages(new_node_data, weap_id, "weapon", tweak_data.gui.WEAPON_ROWS_PER_PAGE, tweak_data.gui.WEAPON_COLUMNS_PER_PAGE, tweak_data.gui.MAX_WEAPON_PAGES)
   managers.menu:open_node("blackmarket_node", {new_node_data})
 end
 
-function NWC:create_pages(new_node_data, weapon, identifier, rows, columns, max_pages)
+function NWC:create_pages(new_node_data, weap_id, identifier, rows, columns, max_pages)
   local category = new_node_data.category
-  local loadout = self.settings.weapons[weapon] or {}
+  local weapon = self:get_weapon(weap_id) or {}
   rows = rows or 3
   columns = columns or 3
   max_pages = max_pages or 8
@@ -134,7 +159,7 @@ function NWC:create_pages(new_node_data, weapon, identifier, rows, columns, max_
     for i = start_i, items_per_page * page, 1 do
       item_data[index] = i
       index = index + 1
-      if i == loadout.slot and category == loadout.category then
+      if i == weapon.slot and category == weapon.category then
         selected_tab = page
       end
     end
@@ -146,7 +171,7 @@ function NWC:create_pages(new_node_data, weapon, identifier, rows, columns, max_
       category = category,
       start_i = start_i,
       name_localized = name_id,
-      on_create_func = callback(self, self, "populate_weapons", weapon),
+      on_create_func = callback(self, self, "populate_weapons", weap_id),
       on_create_data = item_data,
       identifier = BlackMarketGui.identifiers[identifier],
       override_slots = {
@@ -158,16 +183,15 @@ function NWC:create_pages(new_node_data, weapon, identifier, rows, columns, max_
   return selected_tab
 end
 
-function NWC:populate_weapons(weapon, data, gui)
+function NWC:populate_weapons(weap_id, data, gui)
   gui:populate_weapon_category_new(data)
-  local loadout = self.settings.weapons[weapon] or {}
+  local weapon = self:get_weapon(weap_id) or {}
   for k, v in ipairs(data) do
-    local npc_version = v.empty_slot or NWC:get_npc_version(v.name)
-    if npc_version then
-      v.equipped = not v.locked_slot and not v.empty_slot and loadout.slot == v.slot and loadout.category == v.category and npc_version == loadout.name
+    if v.empty_slot or self:has_npc_weapon_version(managers.weapon_factory:get_factory_id_by_weapon_id(v.name)) then
+      v.equipped = not v.locked_slot and not v.empty_slot and weapon.slot == v.slot and weapon.category == v.category
       v.unlocked = true
       v.lock_texture = v.locked_slot and v.lock_texture
-      v.lock_text = nil
+      v.lock_text = v.locked_slot and v.lock_text
       v.comparision_data = nil
       v.buttons = v.empty_slot and {v.locked_slot and "ew_unlock" or "ew_buy"} or {v.equipped and "w_unequip" or "w_equip", "w_mod", "w_preview", "w_sell"}
     else
@@ -179,57 +203,39 @@ function NWC:populate_weapons(weapon, data, gui)
   end
 end
 
-function NWC:select_weapon(weapon, data, gui)
-  local loadout = self.settings.weapons[weapon] or {}
+function NWC:select_weapon(weap_id, data, gui)
+  self.weapons[weap_id] = nil
   if not data or data.equipped then
-    loadout = nil
+    self:clear_weapon(weap_id)
   else
-    local crafted = managers.blackmarket:get_crafted_category_slot(data.category, data.slot)
-    loadout.name = crafted.factory_id .. "_npc"
-    loadout.blueprint = crafted.blueprint
-    loadout.cosmetics = crafted.cosmetics and { id = crafted.cosmetics.id, quality = crafted.cosmetics.quality }
-    loadout.slot = data.slot
-    loadout.category = data.category
+    self.settings.weapons[weap_id] = self.settings.weapons[weap_id] or {}
+    self.settings.weapons[weap_id].category = data.category
+    self.settings.weapons[weap_id].slot = data.slot
   end
-  self.settings.weapons[weapon] = loadout
-  return gui and gui:reload()
+  gui:reload()
 end
 
-function NWC:show_weapon_selection(title, weapon)
+function NWC:show_weapon_selection(title, weap_id)
   local menu_title = title
+  local weapon = self:get_weapon(weap_id)
   local menu_message
-  if self.settings.weapons[weapon] and self.settings.weapons[weapon].name then
-    local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(self.settings.weapons[weapon].name:gsub("_npc$", ""))
-    local replacement = tweak_data.weapon[weapon_id] and managers.localization:text(tweak_data.weapon[weapon_id].name_id) or "unknown"
-    menu_message = managers.localization:text("NWC_menu_weapon_message", { WEAPON = replacement })
+  if weapon and weapon.name then
+    menu_message = managers.localization:text("NWC_menu_weapon_message", { WEAPON = weapon.name })
   else
     menu_message = managers.localization:text("NWC_menu_weapon_message_default")
   end
   local menu_options = {
     {
       text = managers.localization:text("NWC_menu_select_from_primaries"),
-      callback = function () self:open_weapon_category_menu("primaries", weapon) end
+      callback = function () self:open_weapon_category_menu("primaries", weap_id) end
     },
     {
       text = managers.localization:text("NWC_menu_select_from_secondaries"),
-      callback = function () self:open_weapon_category_menu("secondaries", weapon) end
+      callback = function () self:open_weapon_category_menu("secondaries", weap_id) end
     },
     {
       text = managers.localization:text("NWC_menu_use_default"),
-      callback = function ()
-        self.settings.weapons[weapon] = {
-          random_mods = self.settings.weapons[weapon] and self.settings.weapons[weapon].random_mods
-        }
-      end
-    },
-    {--[[seperator]]},
-    {
-      text = managers.localization:text(self.settings.weapons[weapon] and self.settings.weapons[weapon].random_mods and "NWC_menu_disable_random_mods" or "NWC_menu_enable_random_mods"),
-      callback = function ()
-        self.settings.weapons[weapon] = self.settings.weapons[weapon] or {}
-        self.settings.weapons[weapon].random_mods = not self.settings.weapons[weapon].random_mods
-        self:show_weapon_selection(title, weapon)
-      end
+      callback = function () self:clear_weapon(weap_id) end
     },
     {--[[seperator]]},
     {
@@ -398,7 +404,7 @@ Hooks:Add("MenuManagerPopulateCustomMenus", "MenuManagerPopulateCustomMenusNWC",
     return NWC._weapon_names[name] or name:pretty()
   end
   local priority = 50
-  for _, name in ipairs(table.map_keys(NWC.settings.weapons, function (a, b) return weapon_name(a) < weapon_name(b) end)) do
+  for _, name in ipairs(table.map_keys(NWC.weapon_info, function (a, b) return weapon_name(a) < weapon_name(b) end)) do
     
     priority = priority - 1
     
