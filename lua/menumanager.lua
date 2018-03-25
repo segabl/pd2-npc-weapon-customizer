@@ -321,6 +321,7 @@ function NWC:check_create_menu()
   end
 
   local padding = 16
+  local accent = Color("0bce99")
 
   self.menu = MenuUI:new({
     name = "NWCMenu",
@@ -330,6 +331,8 @@ function NWC:check_create_menu()
     text_offset = 8,
     show_help_time = 0.5,
     border_size = 1,
+    accent_color = accent:with_alpha(0.5),
+    highlight_color = accent:with_alpha(0.075),
     localized = true,
     use_default_close_key = true
   })
