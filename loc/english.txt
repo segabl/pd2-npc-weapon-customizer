@@ -7,9 +7,9 @@
   "NWC_menu_weapons_name" : "Edit weapons",
   "NWC_menu_weapons_desc" : "Customize NPC weapons",
   "NWC_menu_add_animations" : "Use firing animations",
-  "NWC_menu_add_animations_desc" : "Weapons will play their firing animations (if available)",
+  "NWC_menu_add_animations_desc" : "If available, weapons will play their firing animations",
   "NWC_menu_force_hq" : "Always use HQ models",
-  "NWC_menu_force_hq_desc" : "All NPCs will use HQ weapon models (WARNING: HQ models are very demanding!)",
+  "NWC_menu_force_hq_desc" : "All NPCs will use HQ weapon models (WARNING: HQ models are very demanding, this option shouldn't be used for normal gameplay!)",
   "NWC_menu_jokers_hq" : "Jokers use HQ models",
   "NWC_menu_jokers_hq_desc" : "Converted enemies will use HQ weapon models",
   "NWC_menu_specials_hq" : "Specials use HQ models",
@@ -19,10 +19,9 @@
   "NWC_menu_keep_sounds" : "Keep original sounds",
   "NWC_menu_keep_sounds_desc" : "Weapons will play the original firing sounds (Snipers always play the original ones)",
   "NWC_menu_locked_slot" : "Not compatible, as there is no NPC version of this weapon!",
-  "NWC_menu_weapon_message" : "You are currently using the $WEAPON.\nWhat do you want to do?",
-  "NWC_menu_weapon_message_default" : "You are currently using the mod's default.\nWhat do you want to do?",
-  "NWC_menu_select_from_primaries" : "Select from primaries",
-  "NWC_menu_select_from_secondaries" : "Select from secondaries",
+  "NWC_menu_weapon_message" : "Currently using $WEAPON in this slot.",
+  "NWC_menu_select_from_primaries" : "Select weapon from primaries",
+  "NWC_menu_select_from_secondaries" : "Select weapon from secondaries",
   "NWC_menu_mod_default" : "Mod Default",
-  "NWC_menu_use_default" : "Use mod default"
+  "NWC_menu_use_default" : "Reset to mod default"
 }

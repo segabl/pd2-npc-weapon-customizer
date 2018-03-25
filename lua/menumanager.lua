@@ -152,6 +152,7 @@ end
 
 function NWC:open_weapon_category_menu(category, weap_id)
   local new_node_data = {
+    prev_node_data = false,
     category = category,
     can_move_over_tabs = true,
     scroll_tab_anywhere = true,
@@ -160,6 +161,9 @@ function NWC:open_weapon_category_menu(category, weap_id)
       w_equip = callback(self, self, "select_weapon", weap_id),
       w_unequip = callback(self, self, "select_weapon", weap_id)
     },
+    back_callback = function ()
+      self:set_menu_state(true)
+    end,
     topic_id = "bm_menu_" .. category
   }
   new_node_data.selected_tab = self:create_pages(new_node_data, weap_id, "weapon", tweak_data.gui.WEAPON_ROWS_PER_PAGE, tweak_data.gui.WEAPON_COLUMNS_PER_PAGE, tweak_data.gui.MAX_WEAPON_PAGES)
@@ -252,14 +256,14 @@ function NWC:show_weapon_selection(title, weap_id)
     {
       text = managers.localization:text("NWC_menu_select_from_primaries"),
       callback = function ()
-        NWC.menu:Disable()
+        self:set_menu_state(false)
         self:open_weapon_category_menu("primaries", weap_id)
       end
     },
     {
       text = managers.localization:text("NWC_menu_select_from_secondaries"),
       callback = function ()
-        NWC.menu:Disable()
+        self:set_menu_state(false)
         self:open_weapon_category_menu("secondaries", weap_id)
       end
     },
@@ -325,7 +329,9 @@ function NWC:check_create_menu()
     animate_toggle = true,
     text_offset = 8,
     show_help_time = 0.5,
-    border_size = 1
+    border_size = 1,
+    localized = true,
+    use_default_close_key = true
   })
   
   local menu_w = self.menu._panel:w()
@@ -341,16 +347,16 @@ function NWC:check_create_menu()
 
   local title = menu:DivGroup({
     name = "NWCTitle",
-    text = managers.localization:text("NWC_menu_main_name"),
-    font_size = 24,
+    text = "NWC_menu_main_name",
+    size = 24,
     background_color = Color.transparent,
     position = { padding, padding }
   })
 
   local base_settings = menu:DivGroup({
     name = "NWCBaseSettings",
-    text = managers.localization:text("NWC_menu_base_settings_name"),
-    font_size = 20,
+    text = "NWC_menu_base_settings_name",
+    size = 20,
     border_bottom = true,
     border_position_below_title = true,
     w = menu_w_left,
@@ -360,35 +366,35 @@ function NWC:check_create_menu()
 
   base_settings:Toggle({
     name = "add_animations",
-    text = managers.localization:text("NWC_menu_add_animations"),
-    help = managers.localization:text("NWC_menu_add_animations_desc"),
-    font_size = 18,
-    callback = ClassClbk(self, "change_menu_setting"),
+    text = "NWC_menu_add_animations",
+    help = "NWC_menu_add_animations_desc",
+    size = 18,
+    on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.add_animations
   })
 
   base_settings:Toggle({
     name = "keep_types",
-    text = managers.localization:text("NWC_menu_keep_types"),
-    help = managers.localization:text("NWC_menu_keep_types_desc"),
-    font_size = 18,
-    callback = ClassClbk(self, "change_menu_setting"),
+    text = "NWC_menu_keep_types",
+    help = "NWC_menu_keep_types_desc",
+    size = 18,
+    on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.keep_types
   })
 
   base_settings:Toggle({
     name = "keep_sounds",
-    text = managers.localization:text("NWC_menu_keep_sounds"),
-    help = managers.localization:text("NWC_menu_keep_sounds_desc"),
-    font_size = 18,
-    callback = ClassClbk(self, "change_menu_setting"),
+    text = "NWC_menu_keep_sounds",
+    help = "NWC_menu_keep_sounds_desc",
+    size = 18,
+    on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.keep_sounds
   })
 
   local quality_settings = menu:DivGroup({
     name = "NWCQualitySettings",
-    text = managers.localization:text("NWC_menu_quality_settings_name"),
-    font_size = 20,
+    text = "NWC_menu_quality_settings_name",
+    size = 20,
     border_bottom = true,
     border_position_below_title = true,
     w = menu_w_left,
@@ -398,47 +404,48 @@ function NWC:check_create_menu()
 
   quality_settings:Toggle({
     name = "force_hq",
-    text = managers.localization:text("NWC_menu_force_hq"),
-    help = managers.localization:text("NWC_menu_force_hq_desc"),
-    font_size = 18,
-    callback = ClassClbk(self, "change_hq_menu_setting"),
+    text = "NWC_menu_force_hq",
+    help = "NWC_menu_force_hq_desc",
+    size = 18,
+    on_callback = function (item) self:change_hq_menu_setting(item) end,
     value = self.settings.force_hq,
   })
 
   quality_settings:Toggle({
     name = "jokers_hq",
-    text = managers.localization:text("NWC_menu_jokers_hq"),
-    help = managers.localization:text("NWC_menu_jokers_hq_desc"),
-    font_size = 18,
-    callback = ClassClbk(self, "change_menu_setting"),
+    text = "NWC_menu_jokers_hq",
+    help = "NWC_menu_jokers_hq_desc",
+    size = 18,
+    on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.jokers_hq
   })
 
   quality_settings:Toggle({
     name = "specials_hq",
-    text = managers.localization:text("NWC_menu_specials_hq"),
-    help = managers.localization:text("NWC_menu_specials_hq_desc"),
-    font_size = 18,
-    callback = ClassClbk(self, "change_menu_setting"),
+    text = "NWC_menu_specials_hq",
+    help = "NWC_menu_specials_hq_desc",
+    size = 18,
+    on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.specials_hq
   })
 
   menu:Button({
     name = "exit",
-    text = managers.localization:text("menu_back"),
-    font_size = 24,
+    text = "menu_back",
+    size = 24,
     size_by_text = true,
-    callback = ClassClbk(self, "set_menu_state", false),
+    on_callback = function (item) self:set_menu_state(false) end,
     position = function (item) item:SetPosition(title:Right() - item:W(), title:Y()) end
   })
 
   local weapon_settings = menu:DivGroup({
     name = "NWCWeaponSettings",
-    text = managers.localization:text("NWC_menu_weapon_settings_name"),
-    font_size = 20,
+    text = "NWC_menu_weapon_settings_name",
+    size = 20,
     border_bottom = true,
     border_position_below_title = true,
     w = menu_w_right,
+    align_method = "grid",
     scrollbar = true,
     max_height = menu_h - title:Bottom() - padding * 2,
     position = { base_settings:Right() + padding, title:Bottom() + padding }
@@ -447,7 +454,6 @@ function NWC:check_create_menu()
   
   self.sorted_weap_ids = table.map_keys(self.weapon_info, function (a, b) return self:npc_weapon_name(a) < self:npc_weapon_name(b) end)
   for i, weap_id in ipairs(self.sorted_weap_ids) do
-    
     local weap = self:get_weapon(weap_id)
     if weap then
       local weap_name = self:npc_weapon_name(weap_id)
@@ -455,10 +461,11 @@ function NWC:check_create_menu()
         name = "weapon_button_" .. weap_id,
         texture = weap.icon,
         img_color = Color.white:with_alpha(weap.slot and 1 or 0.2),
+        help_localized  = false,
         help = weap.name,
         w = menu_w_right / 3 - padding,
         h = 128,
-        callback = ClassClbk(self, "show_weapon_selection", weap_name, weap_id)
+        on_callback = function (item) self:show_weapon_selection(weap_name, weap_id) end
       })
       self:fit_texture(button, padding / 2 + 18)
       button:Panel():text({
@@ -469,24 +476,19 @@ function NWC:check_create_menu()
         y = padding / 2
       })
     end
-    
   end
-
-  weapon_settings:AlignItemsGrid()
   
 end
 
-function NWC:change_menu_setting(parent, item)
+function NWC:change_menu_setting(item)
   self.settings[item:Name()] = item:Value()
   self:save()
 end
 
-function NWC:change_hq_menu_setting(parent, item)
+function NWC:change_hq_menu_setting(item)
   self.settings[item:Name()] = item:Value()
-  local jokers_hq = parent:GetItem("jokers_hq")
-  local specials_hq = parent:GetItem("specials_hq")
-  jokers_hq:SetEnabled(not self.settings[item:Name()])
-  specials_hq:SetEnabled(not self.settings[item:Name()])
+  item.parent:GetItem("jokers_hq"):SetEnabled(not self.settings[item:Name()])
+  item.parent:GetItem("specials_hq"):SetEnabled(not self.settings[item:Name()])
   self:save()
 end
 
@@ -504,7 +506,12 @@ function NWC:refresh_menu()
   end
 end
 
+function NWC:get_menu_state()
+  return self.menu and self.menu:Enabled()
+end
+
 function NWC:set_menu_state(enabled)
+  self:check_create_menu()
   if enabled then
     self:refresh_menu()
     self.menu:Enable()
