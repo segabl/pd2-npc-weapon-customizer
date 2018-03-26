@@ -46,15 +46,13 @@ NWC.settings = {
   weapons = {}
 }
 
-function NWC:get_sync_index(weapon)
-  local index = 1
+function NWC:get_sync_index(weap_id)
   for i, v in ipairs(tweak_data.character.weap_ids) do
-    if v == weapon then
-      index = i
-      break
+    if v == weap_id then
+      return i
     end
   end
-  return index
+  return 4
 end
 
 function NWC:get_weapon_by_tweak_id(tweak_id)
@@ -66,6 +64,9 @@ function NWC:get_weapon_by_tweak_id(tweak_id)
 end
 
 function NWC:get_weapon(weap_id)
+  if not weap_id then
+    return
+  end
   local weapon = self.settings.weapons[weap_id]
   if self.weapons[weap_id] == nil then
     local weapon_info = self.weapon_info[weap_id]
@@ -138,7 +139,6 @@ function NWC:is_special(unit)
 end
 
 function NWC:create_random_blueprint(weapon, random_mods_chance)
-  weapon.blueprint = weapon.blueprint or tweak_data.weapon.factory[weapon.factory_id].default_blueprint
   if not self.dropable_weapon_mods[weapon.factory_id] then
     local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon.factory_id:gsub("_npc$", ""))
     if not weapon_id then
@@ -221,7 +221,7 @@ function NWC:populate_weapons(weap_id, data, gui)
   local weapon = self:get_weapon(weap_id) or {}
   for k, v in ipairs(data) do
     if v.empty_slot or self:has_npc_weapon_version(managers.weapon_factory:get_factory_id_by_weapon_id(v.name)) then
-      v.equipped = not v.locked_slot and not v.empty_slot and weapon.slot == v.slot and weapon.category == v.category
+      v.equipped = not v.empty_slot and weapon.slot == v.slot and weapon.category == v.category
       v.unlocked = true
       v.lock_texture = v.locked_slot and v.lock_texture
       v.lock_text = v.locked_slot and v.lock_text
@@ -237,10 +237,8 @@ function NWC:populate_weapons(weap_id, data, gui)
 end
 
 function NWC:select_weapon(weap_id, data, gui)
-  self.weapons[weap_id] = nil
-  if not data or data.equipped then
-    self:clear_weapon(weap_id)
-  else
+  self:clear_weapon(weap_id)
+  if data and not data.equipped then
     self.settings.weapons[weap_id] = self.settings.weapons[weap_id] or {}
     self.settings.weapons[weap_id].category = data.category
     self.settings.weapons[weap_id].slot = data.slot
@@ -249,12 +247,12 @@ function NWC:select_weapon(weap_id, data, gui)
   gui:reload()
 end
 
-function NWC:show_weapon_actions(title, weap_id)
+function NWC:show_weapon_actions(weap_id)
   local weapon = self:get_weapon(weap_id)
   local diag = MenuDialog:new({
-    accent_color = self.menu_accent,
-    highlight_color = self.menu_accent:with_alpha(0.075),
-    background_color = Color.black:with_alpha(0.75),
+    accent_color = self.menu_accent_color,
+    highlight_color = self.menu_highlight_color,
+    background_color = self.menu_background_color,
     border_size = 1,
     text_offset = self.menu_padding / 4,
     size = self.menu_items_size,
@@ -264,6 +262,7 @@ function NWC:show_weapon_actions(title, weap_id)
     title = self:npc_weapon_name(weap_id),
     message = managers.localization:text("NWC_menu_weapon_message", { WEAPON = weapon.name }),
     yes = false,
+    w = self.menu._panel:w() / 2,
     title_merge = {
       size = self.menu_title_size,
       border_left = false,
@@ -278,6 +277,7 @@ function NWC:show_weapon_actions(title, weap_id)
         name = "select_primaries",
         text = "NWC_menu_select_from_primaries",
         localized = true,
+        enabled = not Utils:IsInGameState(),
         on_callback = function (item)
           diag:hide()
           self:set_menu_state(false)
@@ -288,6 +288,7 @@ function NWC:show_weapon_actions(title, weap_id)
         name = "select_secondaries",
         text = "NWC_menu_select_from_secondaries",
         localized = true,
+        enabled = not Utils:IsInGameState(),
         on_callback = function (item)
           diag:hide()
           self:set_menu_state(false)
@@ -375,7 +376,9 @@ function NWC:check_create_menu()
   self.menu_title_size = 22
   self.menu_items_size = 18
   self.menu_padding = 16
-  self.menu_accent = Color("0bce99"):with_alpha(0.5)
+  self.menu_background_color = Color.black:with_alpha(0.75)
+  self.menu_accent_color = Color("0bce99"):with_alpha(0.75)
+  self.menu_highlight_color = self.menu_accent_color:with_alpha(0.075)
 
   self.menu = MenuUI:new({
     name = "NWCMenu",
@@ -385,8 +388,8 @@ function NWC:check_create_menu()
     text_offset = self.menu_padding / 4,
     show_help_time = 0.5,
     border_size = 1,
-    accent_color = self.menu_accent,
-    highlight_color = self.menu_accent:with_alpha(0.075),
+    accent_color = self.menu_accent_color,
+    highlight_color = self.menu_highlight_color,
     localized = true,
     use_default_close_key = true
   })
@@ -399,7 +402,7 @@ function NWC:check_create_menu()
 
   local menu = self.menu:Menu({
     name = "NWCMainMenu",
-    background_color = Color.black:with_alpha(0.75)
+    background_color = self.menu_background_color
   })
 
   local title = menu:DivGroup({
@@ -422,7 +425,6 @@ function NWC:check_create_menu()
     w = menu_w_left,
     position = { self.menu_padding, title:Bottom() + self.menu_padding }
   })
-  self.menu_base_settings = base_settings
 
   base_settings:Toggle({
     name = "add_animations",
@@ -464,7 +466,6 @@ function NWC:check_create_menu()
     w = menu_w_left,
     position = { self.menu_padding, base_settings:Bottom() }
   })
-  self.menu_quality_settings = quality_settings
 
   quality_settings:Toggle({
     name = "force_hq",
@@ -519,7 +520,6 @@ function NWC:check_create_menu()
   for i, weap_id in ipairs(self.sorted_weap_ids) do
     local weap = self:get_weapon(weap_id)
     if weap then
-      local weap_name = self:npc_weapon_name(weap_id)
       local button = weapon_settings:ImageButton({
         name = "weapon_button_" .. weap_id,
         texture = weap.icon,
@@ -528,14 +528,14 @@ function NWC:check_create_menu()
         help = weap.name,
         w = menu_w_right / 3 - self.menu_padding,
         h = 128,
-        on_callback = function (item) self:show_weapon_actions(weap_name, weap_id) end
+        on_callback = function (item) self:show_weapon_actions(weap_id) end
       })
       self:fit_texture(button, self.menu_padding / 2 + 18)
       button:Panel():text({
-        text = weap_name,
+        text = self:npc_weapon_name(weap_id),
         font = "fonts/font_large_mf",
         align = "center",
-        font_size = 18,
+        font_size = self.menu_items_size,
         y = self.menu_padding / 2
       })
     end
@@ -554,7 +554,7 @@ end
 
 function NWC:change_menu_weapon_setting(item, weap_id)
   self.settings.weapons[weap_id] = self.settings.weapons[weap_id] or {}
-  self.settings.weapons[weap_id].random_mods = item:Value()
+  self.settings.weapons[weap_id][item:Name()] = item:Value()
   if item:Name() == "random_mods" then
     local chance = item.parent:GetItem("random_mods_chance")
     chance:SetEnabled(item:Value())
@@ -564,8 +564,6 @@ function NWC:change_menu_weapon_setting(item, weap_id)
 end
 
 function NWC:refresh_menu()
-  self.menu_weapon_settings:SetEnabled(not Utils:IsInGameState())
-
   for _, weap_id in ipairs(self.sorted_weap_ids) do
     
     local weap = self:get_weapon(weap_id)
@@ -594,7 +592,7 @@ function NWC:set_menu_state(enabled)
 end
 
 function NWC:save()
-  local file = io.open(self.save_path .. "NWC_settings.txt", "w+")
+  local file = io.open(self.save_path .. "NWCSettings.txt", "w+")
   if file then
     file:write(json.encode(self.settings))
     file:close()
@@ -602,7 +600,7 @@ function NWC:save()
 end
 
 function NWC:load()
-  local file = io.open(self.save_path .. "NWC_settings.txt", "r")
+  local file = io.open(self.save_path .. "NWCSettings.txt", "r")
   if file then
     local data = json.decode(file:read("*all")) or {}
     file:close()
@@ -644,16 +642,15 @@ Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenusNWC", funct
 
   NWC:load()
 
-  MenuCallbackHandler.NWC_toggle_menu = function ()
-    NWC:check_create_menu()
-    NWC:set_menu_state(not NWC.menu:Enabled())
+  MenuCallbackHandler.NWC_open_menu = function ()
+    NWC:set_menu_state(true)
   end
   MenuHelperPlus:AddButton({
     id = "NWCMenu",
     title = "NWC_menu_main_name",
     desc = "NWC_menu_main_desc",
     node_name = "blt_options",
-    callback = "NWC_toggle_menu"
+    callback = "NWC_open_menu"
   })
 
 end)
