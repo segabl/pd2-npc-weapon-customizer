@@ -3,21 +3,21 @@ NWC.mod_path = ModPath
 NWC.save_path = SavePath
 NWC.is_client = Network:is_client()
 NWC.tweak_setups = {}
-NWC.dropable_mods = {}
+NWC.dropable_weapon_mods = {}
 NWC.weapons = {}
 NWC.weapon_info = {
   beretta92 = { id = "beretta92_npc", factory_id = "wpn_fps_pis_beretta" },
   c45 = { id = "c45_npc", factory_id = "wpn_fps_pis_g17" },
   raging_bull = { id = "raging_bull_npc", factory_id = "wpn_fps_pis_rage" },
   m4 = { id = "m4_npc", factory_id = "wpn_fps_ass_m4" },
-  ak47 = { id = "ak47_npc", factory_id = "wpn_fps_ass_74" },
+  ak47 = { id = "ak47_npc", factory_id = "wpn_fps_ass_74", menu_suffix = " (Mobster)" },
   r870 = { id = "r870_npc", factory_id = "wpn_fps_shot_r870" },
   mossberg = { id = "mossberg_npc", factory_id = "wpn_fps_shot_huntsman" },
   mp5 = { id = "mp5_npc", factory_id = "wpn_fps_smg_mp5" },
-  mp5_tactical = { id = "mp5_tactical_npc", factory_id = "wpn_fps_smg_mp5" },
+  mp5_tactical = { id = "mp5_tactical_npc", factory_id = "wpn_fps_smg_mp5", menu_suffix = " (Cloaker)" },
   mp9 = { id = "mp9_npc", factory_id = "wpn_fps_smg_mp9" },
   mac11 = { id = "mac11_npc", factory_id = "wpn_fps_smg_mac10" },
-  m14_sniper_npc = { id = "m14_sniper_npc", factory_id = "wpn_fps_ass_g3" },
+  m14_sniper_npc = { id = "m14_sniper_npc", factory_id = "wpn_fps_ass_g3", menu_suffix = " (Sniper)" },
   saiga = { id = "saiga_npc", factory_id = "wpn_fps_shot_saiga" },
   m249 = { id = "m249_npc", factory_id = "wpn_fps_lmg_m249" },
   benelli = { id = "benelli_npc", factory_id = "wpn_fps_sho_ben" },
@@ -25,16 +25,16 @@ NWC.weapon_info = {
   ump = { id = "ump_npc", factory_id = "wpn_fps_smg_schakal" },
   scar_murky = { id = "scar_npc", factory_id = "wpn_fps_ass_scar" },
   rpk_lmg = { id = "rpk_lmg_npc", factory_id = "wpn_fps_lmg_rpk" },
-  svd_snp = { id = "svd_snp_npc", factory_id = "wpn_fps_snp_siltstone" },
+  svd_snp = { id = "svd_snp_npc", factory_id = "wpn_fps_snp_siltstone", menu_suffix = " (Russian Sniper)" },
   akmsu_smg = { id = "akmsu_smg_npc", factory_id = "wpn_fps_smg_akmsu" },
   asval_smg = { id = "asval_smg_npc", factory_id = "wpn_fps_ass_asval" },
   sr2_smg = { id = "sr2_smg_npc", factory_id = "wpn_fps_smg_sr2" },
-  ak47_ass = { id = "ak47_ass_npc", factory_id = "wpn_fps_ass_74" },
+  ak47_ass = { id = "ak47_ass_npc", factory_id = "wpn_fps_ass_74", menu_suffix = " (Russian)" },
   x_c45 = { id = "x_c45_npc", factory_id = "wpn_fps_pis_x_g17" },
   sg417 = { id = "contraband_npc", factory_id = "wpn_fps_ass_contraband" },
-  svdsil_snp = { id = "svdsil_snp_npc", factory_id = "wpn_fps_snp_siltstone" },
+  svdsil_snp = { id = "svdsil_snp_npc", factory_id = "wpn_fps_snp_siltstone", menu_suffix = " (Mobster Sniper)" },
   mini = { id = "mini_npc", factory_id = "wpn_fps_lmg_m134" },
-  heavy_zeal_sniper = { id = "heavy_snp_npc", factory_id = "wpn_fps_ass_g3" }
+  heavy_zeal_sniper = { id = "heavy_snp_npc", factory_id = "wpn_fps_ass_g3", menu_suffix = " (ZEAL Sniper)" }
 }
 NWC.settings = {
   add_animations = true,
@@ -66,6 +66,7 @@ function NWC:get_weapon_by_tweak_id(tweak_id)
 end
 
 function NWC:get_weapon(weap_id)
+  local weapon = self.settings.weapons[weap_id]
   if self.weapons[weap_id] == nil then
     local weapon_info = self.weapon_info[weap_id]
     if not weapon_info then
@@ -73,7 +74,6 @@ function NWC:get_weapon(weap_id)
       self.weapons[weap_id] = false
       return
     end
-    local weapon = self.settings.weapons[weap_id]
     local crafted = weapon and weapon.category and weapon.slot and managers.blackmarket:get_crafted_category_slot(weapon.category, weapon.slot)
     if crafted and self:has_npc_weapon_version(crafted.factory_id) then
       self.weapons[weap_id] = {
@@ -100,12 +100,20 @@ function NWC:get_weapon(weap_id)
       }
     end
   end
+  if weapon and weapon.random_mods and Utils:IsInGameState() then
+    local w = deep_clone(self.weapons[weap_id])
+    self:create_random_blueprint(w, weapon.random_mods_chance or 0.5)
+    return w
+  end
   return self.weapons[weap_id]
 end
 
 function NWC:clear_weapon(weap_id)
   self.weapons[weap_id] = nil
-  self.settings.weapons[weap_id] = nil
+  if self.settings.weapons[weap_id] then
+    self.settings.weapons[weap_id].category = nil
+    self.settings.weapons[weap_id].slot = nil
+  end
 end
 
 function NWC:has_npc_weapon_version(factory_id)
@@ -129,26 +137,24 @@ function NWC:is_special(unit)
   return tweak_data.character[unit:base()._tweak_table].priority_shout and true
 end
 
---[[
-function NWC:create_random_blueprint(weapon)
-  weapon.blueprint = weapon.blueprint or tweak_data.weapon.factory[weapon.name].default_blueprint
-  if not self.dropable_mods[weapon.name] then
-    local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon.name:gsub("_npc$", ""))
+function NWC:create_random_blueprint(weapon, random_mods_chance)
+  weapon.blueprint = weapon.blueprint or tweak_data.weapon.factory[weapon.factory_id].default_blueprint
+  if not self.dropable_weapon_mods[weapon.factory_id] then
+    local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon.factory_id:gsub("_npc$", ""))
     if not weapon_id then
       return
     end
-    self.dropable_mods[weapon.name] = managers.blackmarket:get_dropable_mods_by_weapon_id(weapon_id)
+    self.dropable_weapon_mods[weapon.factory_id] = managers.blackmarket:get_dropable_mods_by_weapon_id(weapon_id)
   end
-  for part_type, parts_data in pairs(self.dropable_mods[weapon.name]) do
-    if math.random() < 1 then
+  for part_type, parts_data in pairs(self.dropable_weapon_mods[weapon.factory_id]) do
+    if math.random() < random_mods_chance then
       local part_data = table.random(parts_data)
       if part_data then
-        managers.weapon_factory:change_part_blueprint_only(weapon.name, part_data[1], weapon.blueprint)
+        managers.weapon_factory:change_part_blueprint_only(weapon.factory_id, part_data[1], weapon.blueprint)
       end
     end
   end
 end
-]]
 
 function NWC:open_weapon_category_menu(category, weap_id)
   local new_node_data = {
@@ -243,60 +249,106 @@ function NWC:select_weapon(weap_id, data, gui)
   gui:reload()
 end
 
-function NWC:show_weapon_selection(title, weap_id)
-  local menu_title = title
+function NWC:show_weapon_actions(title, weap_id)
   local weapon = self:get_weapon(weap_id)
-  local menu_message
-  if weapon and weapon.name then
-    menu_message = managers.localization:text("NWC_menu_weapon_message", { WEAPON = weapon.name })
-  else
-    menu_message = managers.localization:text("NWC_menu_weapon_message_default")
-  end
-  local menu_options = {
-    {
-      text = managers.localization:text("NWC_menu_select_from_primaries"),
-      callback = function ()
-        self:set_menu_state(false)
-        self:open_weapon_category_menu("primaries", weap_id)
-      end
+  local diag = MenuDialog:new({
+    accent_color = self.menu_accent,
+    highlight_color = self.menu_accent:with_alpha(0.075),
+    background_color = Color.black:with_alpha(0.75),
+    border_size = 1,
+    text_offset = self.menu_padding / 4,
+    size = self.menu_items_size,
+    items_size = self.menu_items_size
+  })
+  diag:Show({
+    title = self:npc_weapon_name(weap_id),
+    message = managers.localization:text("NWC_menu_weapon_message", { WEAPON = weapon.name }),
+    yes = false,
+    title_merge = {
+      size = self.menu_title_size,
+      border_left = false,
+      border_bottom = true,
+      border_position_below_title = true
     },
-    {
-      text = managers.localization:text("NWC_menu_select_from_secondaries"),
-      callback = function ()
-        self:set_menu_state(false)
-        self:open_weapon_category_menu("secondaries", weap_id)
-      end
-    },
-    {
-      text = managers.localization:text("NWC_menu_use_default"),
-      callback = function ()
-        self:clear_weapon(weap_id)
-        self:save()
-        self:refresh_menu()
-      end
-    },
-    {--[[seperator]]},
-    {
-      text = managers.localization:text("menu_back"),
-      is_cancel_button = true
-    }
-  }
-  QuickMenu:new(menu_title, menu_message, menu_options, true)
+    create_items = function (menu)
+      menu:Divider({
+        h = self.menu_padding / 2
+      })
+      menu:Button({
+        name = "select_primaries",
+        text = "NWC_menu_select_from_primaries",
+        localized = true,
+        on_callback = function (item)
+          diag:hide()
+          self:set_menu_state(false)
+          self:open_weapon_category_menu("primaries", weap_id)
+        end
+      })
+      menu:Button({
+        name = "select_secondaries",
+        text = "NWC_menu_select_from_secondaries",
+        localized = true,
+        on_callback = function (item)
+          diag:hide()
+          self:set_menu_state(false)
+          self:open_weapon_category_menu("secondaries", weap_id)
+        end
+      })
+      menu:Button({
+        name = "reset",
+        text = "NWC_menu_use_default",
+        localized = true,
+        on_callback = function (item)
+          diag:hide()
+          self:clear_weapon(weap_id)
+          self:save()
+          self:refresh_menu()
+        end
+      })
+      menu:Divider({
+        h = self.menu_padding / 4
+      })
+      menu:Toggle({
+        name = "random_mods",
+        text = "NWC_menu_use_random_mods",
+        help = "NWC_menu_use_random_mods_desc",
+        localized = true,
+        value = self.settings.weapons[weap_id] and self.settings.weapons[weap_id].random_mods,
+        on_callback = function (item) self:change_menu_weapon_setting(item, weap_id) end
+      })
+      menu:Slider({
+        name = "random_mods_chance",
+        text = "NWC_menu_random_mods_chance",
+        help = "NWC_menu_random_mods_chance_desc",
+        localized = true,
+        value = self.settings.weapons[weap_id] and self.settings.weapons[weap_id].random_mods_chance or 0.5,
+        min = 0,
+        max = 1,
+        step = 0.05,
+        floats = 2,
+        wheel_control = true,
+        enabled = self.settings.weapons[weap_id] and self.settings.weapons[weap_id].random_mods and true or false,
+        on_callback = function (item) self:change_menu_weapon_setting(item, weap_id) end
+      })
+      menu:Divider({
+        h = self.menu_padding / 4
+      })
+      menu:Button({
+        name = "back",
+        text = "menu_back",
+        localized = true,
+        text_align = "right",
+        on_callback = function (item)
+          diag:hide()
+        end
+      })
+    end
+  })
 end
 
 function NWC:npc_weapon_name(weap_id)
-  local loc = managers.localization
   local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(self.weapon_info[weap_id].factory_id)
-  NWC._weapon_names = NWC._weapon_names or {
-    ak47 = loc:text("bm_w_ak74") .. " (Mobster)",
-    mp5_tactical = loc:text("bm_w_mp5") .. " (Cloaker)",
-    m14_sniper_npc = loc:text("bm_w_g3") .. " (Sniper)",
-    svd_snp = loc:text("bm_w_siltstone") .. " (Russian Sniper)",
-    ak47_ass = loc:text("bm_w_ak74") .. " (Russian)",
-    svdsil_snp = loc:text("bm_w_siltstone") .. " (Mobster Sniper)",
-    heavy_zeal_sniper = loc:text("bm_w_g3") .. " (ZEAL Sniper)"
-  }
-  return NWC._weapon_names[weap_id] or loc:text(tweak_data.weapon[weapon_id].name_id)
+  return managers.localization:text(tweak_data.weapon[weapon_id].name_id) .. (self.weapon_info[weap_id].menu_suffix or "")
 end
 
 function NWC:fit_texture(item, h_offset)
@@ -320,19 +372,21 @@ function NWC:check_create_menu()
     return
   end
 
-  local padding = 16
-  local accent = Color("0bce99")
+  self.menu_title_size = 22
+  self.menu_items_size = 18
+  self.menu_padding = 16
+  self.menu_accent = Color("0bce99"):with_alpha(0.5)
 
   self.menu = MenuUI:new({
     name = "NWCMenu",
     layer = 1000,
     background_blur = true,
     animate_toggle = true,
-    text_offset = 8,
+    text_offset = self.menu_padding / 4,
     show_help_time = 0.5,
     border_size = 1,
-    accent_color = accent:with_alpha(0.5),
-    highlight_color = accent:with_alpha(0.075),
+    accent_color = self.menu_accent,
+    highlight_color = self.menu_accent:with_alpha(0.075),
     localized = true,
     use_default_close_key = true
   })
@@ -340,8 +394,8 @@ function NWC:check_create_menu()
   local menu_w = self.menu._panel:w()
   local menu_h = self.menu._panel:h()
 
-  local menu_w_left = menu_w / 3 - padding
-  local menu_w_right = menu_w - menu_w_left - padding * 2
+  local menu_w_left = menu_w / 3 - self.menu_padding
+  local menu_w_right = menu_w - menu_w_left - self.menu_padding * 2
 
   local menu = self.menu:Menu({
     name = "NWCMainMenu",
@@ -351,19 +405,22 @@ function NWC:check_create_menu()
   local title = menu:DivGroup({
     name = "NWCTitle",
     text = "NWC_menu_main_name",
-    size = 24,
+    size = 26,
     background_color = Color.transparent,
-    position = { padding, padding }
+    position = { self.menu_padding, self.menu_padding }
   })
 
   local base_settings = menu:DivGroup({
     name = "NWCBaseSettings",
     text = "NWC_menu_base_settings_name",
-    size = 20,
+    size = self.menu_title_size,
+    inherit_values = {
+      size = self.menu_items_size
+    },
     border_bottom = true,
     border_position_below_title = true,
     w = menu_w_left,
-    position = { padding, title:Bottom() + padding }
+    position = { self.menu_padding, title:Bottom() + self.menu_padding }
   })
   self.menu_base_settings = base_settings
 
@@ -371,7 +428,6 @@ function NWC:check_create_menu()
     name = "add_animations",
     text = "NWC_menu_add_animations",
     help = "NWC_menu_add_animations_desc",
-    size = 18,
     on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.add_animations
   })
@@ -380,7 +436,6 @@ function NWC:check_create_menu()
     name = "keep_types",
     text = "NWC_menu_keep_types",
     help = "NWC_menu_keep_types_desc",
-    size = 18,
     on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.keep_types
   })
@@ -389,19 +444,25 @@ function NWC:check_create_menu()
     name = "keep_sounds",
     text = "NWC_menu_keep_sounds",
     help = "NWC_menu_keep_sounds_desc",
-    size = 18,
     on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.keep_sounds
+  })
+
+  base_settings:Divider({
+    h = self.menu_padding * 2
   })
 
   local quality_settings = menu:DivGroup({
     name = "NWCQualitySettings",
     text = "NWC_menu_quality_settings_name",
-    size = 20,
+    size = self.menu_title_size,
+    inherit_values = {
+      size = self.menu_items_size
+    },
     border_bottom = true,
     border_position_below_title = true,
     w = menu_w_left,
-    position = { padding, base_settings:Bottom() + padding * 2 }
+    position = { self.menu_padding, base_settings:Bottom() }
   })
   self.menu_quality_settings = quality_settings
 
@@ -409,8 +470,7 @@ function NWC:check_create_menu()
     name = "force_hq",
     text = "NWC_menu_force_hq",
     help = "NWC_menu_force_hq_desc",
-    size = 18,
-    on_callback = function (item) self:change_hq_menu_setting(item) end,
+    on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.force_hq,
   })
 
@@ -418,7 +478,7 @@ function NWC:check_create_menu()
     name = "jokers_hq",
     text = "NWC_menu_jokers_hq",
     help = "NWC_menu_jokers_hq_desc",
-    size = 18,
+    enabled = not self.settings.force_hq,
     on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.jokers_hq
   })
@@ -427,7 +487,7 @@ function NWC:check_create_menu()
     name = "specials_hq",
     text = "NWC_menu_specials_hq",
     help = "NWC_menu_specials_hq_desc",
-    size = 18,
+    enabled = not self.settings.force_hq,
     on_callback = function (item) self:change_menu_setting(item) end,
     value = self.settings.specials_hq
   })
@@ -444,14 +504,14 @@ function NWC:check_create_menu()
   local weapon_settings = menu:DivGroup({
     name = "NWCWeaponSettings",
     text = "NWC_menu_weapon_settings_name",
-    size = 20,
+    size = self.menu_title_size,
     border_bottom = true,
     border_position_below_title = true,
     w = menu_w_right,
     align_method = "grid",
     scrollbar = true,
-    max_height = menu_h - title:Bottom() - padding * 2,
-    position = { base_settings:Right() + padding, title:Bottom() + padding }
+    max_height = menu_h - title:Bottom() - self.menu_padding * 2,
+    position = { base_settings:Right() + self.menu_padding, title:Bottom() + self.menu_padding }
   })
   self.menu_weapon_settings = weapon_settings
   
@@ -466,17 +526,17 @@ function NWC:check_create_menu()
         img_color = Color.white:with_alpha(weap.slot and 1 or 0.2),
         help_localized  = false,
         help = weap.name,
-        w = menu_w_right / 3 - padding,
+        w = menu_w_right / 3 - self.menu_padding,
         h = 128,
-        on_callback = function (item) self:show_weapon_selection(weap_name, weap_id) end
+        on_callback = function (item) self:show_weapon_actions(weap_name, weap_id) end
       })
-      self:fit_texture(button, padding / 2 + 18)
+      self:fit_texture(button, self.menu_padding / 2 + 18)
       button:Panel():text({
         text = weap_name,
         font = "fonts/font_large_mf",
         align = "center",
         font_size = 18,
-        y = padding / 2
+        y = self.menu_padding / 2
       })
     end
   end
@@ -485,13 +545,21 @@ end
 
 function NWC:change_menu_setting(item)
   self.settings[item:Name()] = item:Value()
+  if item:Name() == "force_hq" then
+    item.parent:GetItem("jokers_hq"):SetEnabled(not self.settings[item:Name()])
+    item.parent:GetItem("specials_hq"):SetEnabled(not self.settings[item:Name()])
+  end
   self:save()
 end
 
-function NWC:change_hq_menu_setting(item)
-  self.settings[item:Name()] = item:Value()
-  item.parent:GetItem("jokers_hq"):SetEnabled(not self.settings[item:Name()])
-  item.parent:GetItem("specials_hq"):SetEnabled(not self.settings[item:Name()])
+function NWC:change_menu_weapon_setting(item, weap_id)
+  self.settings.weapons[weap_id] = self.settings.weapons[weap_id] or {}
+  self.settings.weapons[weap_id].random_mods = item:Value()
+  if item:Name() == "random_mods" then
+    local chance = item.parent:GetItem("random_mods_chance")
+    chance:SetEnabled(item:Value())
+    self.settings.weapons[weap_id].random_mods_chance = self.settings.weapons[weap_id].random_mods_chance or item:Value() and chance:Value()
+  end
   self:save()
 end
 

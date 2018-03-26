@@ -1,11 +1,9 @@
 {
   "NWC_menu_main_name" : "NPC Weapon Customizer",
   "NWC_menu_main_desc" : "Customize the look of NPC weapons",
-  "NWC_menu_base_settings_name" : "Basic Settings",
+  "NWC_menu_base_settings_name" : "General Settings",
   "NWC_menu_quality_settings_name" : "Quality Settings",
   "NWC_menu_weapon_settings_name" : "Weapon Settings",
-  "NWC_menu_weapons_name" : "Edit weapons",
-  "NWC_menu_weapons_desc" : "Customize NPC weapons",
   "NWC_menu_add_animations" : "Use firing animations",
   "NWC_menu_add_animations_desc" : "If available, weapons will play their firing animations",
   "NWC_menu_force_hq" : "Always use HQ models",
@@ -20,8 +18,12 @@
   "NWC_menu_keep_sounds_desc" : "Weapons will play the original firing sounds (Snipers always play the original ones)",
   "NWC_menu_locked_slot" : "Not compatible, as there is no NPC version of this weapon!",
   "NWC_menu_weapon_message" : "Currently using $WEAPON in this slot.",
+  "NWC_menu_mod_default" : "Mod Default",
   "NWC_menu_select_from_primaries" : "Select weapon from primaries",
   "NWC_menu_select_from_secondaries" : "Select weapon from secondaries",
-  "NWC_menu_mod_default" : "Mod Default",
-  "NWC_menu_use_default" : "Reset to mod default"
+  "NWC_menu_use_default" : "Reset to mod default weapon",
+  "NWC_menu_use_random_mods" : "Use random weapon mods",
+  "NWC_menu_use_random_mods_desc" : "Whenever an NPC spawns with this weapon, randomize its blueprint",
+  "NWC_menu_random_mods_chance" : "Weapon mod chance",
+  "NWC_menu_random_mods_chance_desc" : "Chance for each weapon mod type to be randomized"
 }
