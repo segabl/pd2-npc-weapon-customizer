@@ -145,7 +145,8 @@ function NWC:is_special(unit)
   if not alive(unit) then
     return false
   end
-  return tweak_data.character[unit:base()._tweak_table].priority_shout and true
+  local tweak_table = unit:base()._tweak_table
+  return (tweak_table:match("boss") or tweak_data.character[tweak_table].priority_shout) and true
 end
 
 function NWC:create_random_blueprint(weapon, random_mods_chance)
