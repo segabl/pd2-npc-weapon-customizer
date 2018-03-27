@@ -274,10 +274,7 @@ function NWC:show_weapon_actions(weap_id)
     yes = false,
     w = self.menu._panel:w() / 2,
     title_merge = {
-      size = self.menu_title_size,
-      border_left = false,
-      border_bottom = true,
-      border_position_below_title = true
+      size = self.menu_title_size
     },
     create_items = function (menu)
       menu:Divider({
