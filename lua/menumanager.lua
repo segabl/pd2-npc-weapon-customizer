@@ -507,7 +507,7 @@ function NWC:check_create_menu()
     size = 24,
     size_by_text = true,
     on_callback = function (item) self:set_menu_state(false) end,
-    position = function (item) item:SetPosition(title:Right() - item:W(), title:Y()) end
+    position = function (item) item:SetPosition(title:Right() - item:W() - self.menu_padding, title:Y()) end
   })
 
   local weapon_settings = menu:DivGroup({
