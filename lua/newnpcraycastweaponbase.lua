@@ -103,6 +103,7 @@ function NewNPCRaycastWeaponBase:setup(...)
   self._original_id = self._name_id
   self._name_id = NWC.npc_gun_added.id
   
+  managers.mutators:modify_value("CopInventory:add_unit_by_name", NWC.npc_gun_added.unit:inventory())
   if NWC.npc_gun_added.unit:inventory()._shield_unit_name then
     CopInventory._chk_spawn_shield(NWC.npc_gun_added.unit:inventory(), self._unit)
   end
