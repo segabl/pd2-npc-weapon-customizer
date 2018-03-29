@@ -65,6 +65,29 @@ function NewNPCRaycastWeaponBase:tweak_data_anim_play(anim, ...)
   return tweak_data_anim_play_original(self, anim, ...)
 end
 
+local set_laser_enabled_original = NewNPCRaycastWeaponBase.set_laser_enabled
+function NewNPCRaycastWeaponBase:set_laser_enabled(state, ...)
+  -- use laser module that's part of the gun (if there is one) instead of spawning a new one
+  if state and self._assembly_complete and not alive(self._laser_unit) then
+    local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+    for i, id in ipairs(gadgets) do
+      gadget = self._parts[id]
+      if gadget then
+        local gadget_base = gadget.unit:base()
+        if gadget_base.GADGET_TYPE == "laser" then
+          self._laser_unit = gadget.unit
+          self._laser_unit:base():set_npc()
+          self._laser_unit:base():set_on()
+          self._laser_unit:base():set_color_by_theme("cop_sniper")
+          self._laser_unit:base():set_max_distace(10000)
+          break
+        end
+      end
+    end
+  end
+  return set_laser_enabled_original(self, state, ...)
+end
+
 local setup_original = NewNPCRaycastWeaponBase.setup
 function NewNPCRaycastWeaponBase:setup(...)
   setup_original(self, ...)
