@@ -112,8 +112,6 @@ function NewNPCRaycastWeaponBase:setup(...)
     if not NWC.settings.keep_sounds and not tweak_data.weapon[self._name_id].sounds.prefix:match("sniper_npc") then
       tweak_data.weapon[self._name_id].sounds = tweak_data.weapon[self._original_id].sounds
     end
-    tweak_data.weapon[self._name_id].muzzleflash = tweak_data.weapon[self._original_id].muzzleflash
-    tweak_data.weapon[self._name_id].shell_ejection = tweak_data.weapon[self._original_id].shell_ejection
     if not NWC.settings.keep_types and not NWC.npc_gun_added.unit:inventory()._shield_unit_name then
       tweak_data.weapon[self._name_id].hold = tweak_data.weapon[self._original_id].hold
       tweak_data.weapon[self._name_id].reload = tweak_data.weapon[self._original_id].reload
