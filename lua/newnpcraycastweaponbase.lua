@@ -67,25 +67,31 @@ end
 
 local set_laser_enabled_original = NewNPCRaycastWeaponBase.set_laser_enabled
 function NewNPCRaycastWeaponBase:set_laser_enabled(state, ...)
-  -- use laser module that's part of the gun (if there is one) instead of spawning a new one
-  if state and self._assembly_complete and not alive(self._laser_unit) then
+  -- use existing laser module (if there is one) instead of spawning a new one
+  if self._laser_gadget_base == nil then
+    self._laser_gadget_base = false
     local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
-    for i, id in ipairs(gadgets) do
-      gadget = self._parts[id]
-      if gadget then
-        local gadget_base = gadget.unit:base()
-        if gadget_base.GADGET_TYPE == "laser" then
-          self._laser_unit = gadget.unit
-          self._laser_unit:base():set_npc()
-          self._laser_unit:base():set_on()
-          self._laser_unit:base():set_color_by_theme("cop_sniper")
-          self._laser_unit:base():set_max_distace(10000)
-          break
-        end
+    for _, id in ipairs(gadgets) do
+      local gadget = self._parts[id]
+      local gadget_base = gadget and gadget.unit:base()
+      if gadget_base and gadget_base.GADGET_TYPE == "laser" then
+        gadget_base:set_npc()
+        gadget_base:set_color_by_theme("cop_sniper")
+        gadget_base:set_max_distace(10000)
+        self._laser_gadget_base = gadget_base
+        break
       end
     end
   end
-  return set_laser_enabled_original(self, state, ...)
+  if self._laser_gadget_base then
+    if state then
+      self._laser_gadget_base:set_on()
+    else
+      self._laser_gadget_base:set_off()
+    end
+  else
+    return set_laser_enabled_original(self, state, ...)
+  end
 end
 
 local setup_original = NewNPCRaycastWeaponBase.setup
