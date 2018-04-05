@@ -1,7 +1,13 @@
+local init_original = CopInventory.init
+function CopInventory:init(...)
+  init_original(self, ...)
+  self._is_cop_inventory = true
+end
+
 local add_unit_original = CopInventory.add_unit
 function CopInventory:add_unit(new_unit, ...)
   -- right before a weapon is added to inventory, check for a replacement
-  local replacement_data = NWC:get_weapon(new_unit:base()._name_id)
+  local replacement_data = self._is_cop_inventory and NWC:get_weapon(new_unit:base()._name_id)
   if replacement_data then
     local old_unit = new_unit
     local old_base = old_unit:base()

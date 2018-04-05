@@ -1,3 +1,11 @@
+local init_original = TeamAIInventory.init
+function TeamAIInventory:init(...)
+  init_original(self, ...)
+  self._is_cop_inventory = nil
+end
+
+-- need to do some ugly function overriding here unfortunately
+-- at least it's kept to a minimum ¯\_(ツ)_/¯
 function TeamAIInventory:add_unit_by_name(new_unit_name, equip)
   local new_unit = World:spawn_unit(new_unit_name, Vector3(), Rotation())
   local setup_data = {
@@ -15,6 +23,4 @@ function TeamAIInventory:add_unit_by_name(new_unit_name, equip)
 
   new_unit:base():setup(setup_data)
   self:add_unit(new_unit, equip)
-  -- Overkill plz, why are you disabling the unit? It's disabled in the add_unit call anyways and only causes me trouble, needing to override the entire function
-  --new_unit:set_enabled(false)
 end
