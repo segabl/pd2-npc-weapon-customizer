@@ -2,10 +2,12 @@ local convert_to_criminal_original = CopBrain.convert_to_criminal
 function CopBrain:convert_to_criminal(...)
   convert_to_criminal_original(self, ...)
 
-  local _, weap = self._unit:base():default_weapon_name()
+  local equipped_w_selection = unit:inventory():equipped_selection()
+  local weap = equipped_w_selection and NWC:get_weapon_by_tweak_id(unit:inventory():equipped_unit():base()._name_id)
   if weap then
     -- switch default gun to customized gun
-    local stats = NWC:remove_equipped_gun(self._unit:inventory())
+    local damage = inventory:equipped_unit():base()._damage
+    unit:inventory():remove_selection(equipped_w_selection, true)
   
     NWC.npc_gun_added = { id = weap.id, sync_index = weap.sync_index, unit = self._unit }
     self._unit:inventory():add_unit_by_factory_blueprint(weap.factory_id, true, true, weap.blueprint, weap.cosmetics)

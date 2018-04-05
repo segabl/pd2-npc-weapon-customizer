@@ -63,16 +63,6 @@ function NWC:get_weapon_by_tweak_id(tweak_id)
   end
 end
 
-function NWC:remove_equipped_gun(inventory)
-  local equipped_w_selection = inventory:equipped_selection()
-  local stats = {}
-  if equipped_w_selection then
-    stats.damage = inventory:equipped_unit():base()._damage
-    inventory:remove_selection(equipped_w_selection, true)
-  end
-  return stats
-end
-
 function NWC:get_weapon(weap_id)
   if not weap_id then
     return
