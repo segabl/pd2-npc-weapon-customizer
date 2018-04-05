@@ -6,35 +6,35 @@ NWC.tweak_setups = {}
 NWC.dropable_weapon_mods = {}
 NWC.weapons = {}
 NWC.weapon_info = {
-  beretta92 = { id = "beretta92_npc", factory_id = "wpn_fps_pis_beretta" },
-  c45 = { id = "c45_npc", factory_id = "wpn_fps_pis_g17" },
-  raging_bull = { id = "raging_bull_npc", factory_id = "wpn_fps_pis_rage" },
-  m4 = { id = "m4_npc", factory_id = "wpn_fps_ass_m4" },
-  ak47 = { id = "ak47_npc", factory_id = "wpn_fps_ass_74", menu_suffix = " (Mobster)" },
-  r870 = { id = "r870_npc", factory_id = "wpn_fps_shot_r870" },
-  mossberg = { id = "mossberg_npc", factory_id = "wpn_fps_shot_huntsman" },
-  mp5 = { id = "mp5_npc", factory_id = "wpn_fps_smg_mp5" },
-  mp5_tactical = { id = "mp5_tactical_npc", factory_id = "wpn_fps_smg_mp5", menu_suffix = " (Cloaker)" },
-  mp9 = { id = "mp9_npc", factory_id = "wpn_fps_smg_mp9" },
-  mac11 = { id = "mac11_npc", factory_id = "wpn_fps_smg_mac10" },
-  m14_sniper_npc = { id = "m14_sniper_npc", factory_id = "wpn_fps_ass_g3", menu_suffix = " (Sniper)" },
-  saiga = { id = "saiga_npc", factory_id = "wpn_fps_shot_saiga" },
-  m249 = { id = "m249_npc", factory_id = "wpn_fps_lmg_m249" },
-  benelli = { id = "benelli_npc", factory_id = "wpn_fps_sho_ben" },
-  g36 = { id = "g36_npc", factory_id = "wpn_fps_ass_g36" },
-  ump = { id = "ump_npc", factory_id = "wpn_fps_smg_schakal" },
-  scar_murky = { id = "scar_npc", factory_id = "wpn_fps_ass_scar" },
-  rpk_lmg = { id = "rpk_lmg_npc", factory_id = "wpn_fps_lmg_rpk" },
-  svd_snp = { id = "svd_snp_npc", factory_id = "wpn_fps_snp_siltstone", menu_suffix = " (Russian Sniper)" },
-  akmsu_smg = { id = "akmsu_smg_npc", factory_id = "wpn_fps_smg_akmsu" },
-  asval_smg = { id = "asval_smg_npc", factory_id = "wpn_fps_ass_asval" },
-  sr2_smg = { id = "sr2_smg_npc", factory_id = "wpn_fps_smg_sr2" },
-  ak47_ass = { id = "ak47_ass_npc", factory_id = "wpn_fps_ass_74", menu_suffix = " (Russian)" },
-  x_c45 = { id = "x_c45_npc", factory_id = "wpn_fps_pis_x_g17" },
-  sg417 = { id = "contraband_npc", factory_id = "wpn_fps_ass_contraband" },
-  svdsil_snp = { id = "svdsil_snp_npc", factory_id = "wpn_fps_snp_siltstone", menu_suffix = " (Mobster Sniper)" },
-  mini = { id = "mini_npc", factory_id = "wpn_fps_lmg_m134" },
-  heavy_zeal_sniper = { id = "heavy_snp_npc", factory_id = "wpn_fps_ass_g3", menu_suffix = " (ZEAL Sniper)" }
+  beretta92_npc = { factory_id = "wpn_fps_pis_beretta" },
+  c45_npc = { factory_id = "wpn_fps_pis_g17" },
+  raging_bull_npc = { factory_id = "wpn_fps_pis_rage" },
+  m4_npc = { factory_id = "wpn_fps_ass_m4" },
+  ak47_npc = { factory_id = "wpn_fps_ass_74", menu_suffix = " (Mobster)" },
+  r870_npc = { factory_id = "wpn_fps_shot_r870" },
+  mossberg_npc = { factory_id = "wpn_fps_shot_huntsman" },
+  mp5_npc = { factory_id = "wpn_fps_smg_mp5" },
+  mp5_tactical_npc = { factory_id = "wpn_fps_smg_mp5", menu_suffix = " (Cloaker)" },
+  mp9_npc = { factory_id = "wpn_fps_smg_mp9" },
+  mac11_npc = { factory_id = "wpn_fps_smg_mac10" },
+  m14_sniper_npc = { factory_id = "wpn_fps_ass_g3", menu_suffix = " (Sniper)" },
+  saiga_npc = { factory_id = "wpn_fps_shot_saiga" },
+  m249_npc = { factory_id = "wpn_fps_lmg_m249" },
+  benelli_npc = { factory_id = "wpn_fps_sho_ben" },
+  g36_npc = { factory_id = "wpn_fps_ass_g36" },
+  ump_npc = { factory_id = "wpn_fps_smg_schakal" },
+  scar_npc = { factory_id = "wpn_fps_ass_scar" },
+  rpk_lmg_npc = { factory_id = "wpn_fps_lmg_rpk" },
+  svd_snp_npc = { factory_id = "wpn_fps_snp_siltstone", menu_suffix = " (Russian Sniper)" },
+  akmsu_smg_npc = { factory_id = "wpn_fps_smg_akmsu" },
+  asval_smg_npc = { factory_id = "wpn_fps_ass_asval" },
+  sr2_smg_npc = { factory_id = "wpn_fps_smg_sr2" },
+  ak47_ass_npc = { factory_id = "wpn_fps_ass_74", menu_suffix = " (Russian)" },
+  x_c45_npc = { factory_id = "wpn_fps_pis_x_g17" },
+  contraband_npc = { factory_id = "wpn_fps_ass_contraband" },
+  svdsil_snp_npc = { factory_id = "wpn_fps_snp_siltstone", menu_suffix = " (Mobster Sniper)" },
+  mini_npc = { factory_id = "wpn_fps_lmg_m134" },
+  heavy_snp_npc = { factory_id = "wpn_fps_ass_g3", menu_suffix = " (ZEAL Sniper)" }
 }
 NWC.settings = {
   add_animations = true,
@@ -45,23 +45,6 @@ NWC.settings = {
   keep_sounds = false,
   weapons = {}
 }
-
-function NWC:get_sync_index(weap_id)
-  for i, v in ipairs(tweak_data.character.weap_ids) do
-    if v == weap_id then
-      return i
-    end
-  end
-  return 4
-end
-
-function NWC:get_weapon_by_tweak_id(tweak_id)
-  for k, v in pairs(self.weapon_info) do
-    if v.id == tweak_id then
-      return self:get_weapon(k)
-    end
-  end
-end
 
 function NWC:get_weapon(weap_id)
   if not weap_id then
@@ -78,8 +61,6 @@ function NWC:get_weapon(weap_id)
     local crafted = weapon and weapon.category and weapon.slot and managers.blackmarket:get_crafted_category_slot(weapon.category, weapon.slot)
     if crafted and self:has_npc_weapon_version(crafted.factory_id) then
       self.weapons[weap_id] = {
-        sync_index = self:get_sync_index(weap_id),
-        id = self.weapon_info[weap_id].id,
         factory_id = crafted.factory_id .. "_npc",
         blueprint = crafted.blueprint,
         cosmetics = crafted.cosmetics,
@@ -92,8 +73,6 @@ function NWC:get_weapon(weap_id)
       self:clear_weapon(weap_id)
       local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(self.weapon_info[weap_id].factory_id)
       self.weapons[weap_id] = {
-        sync_index = self:get_sync_index(weap_id),
-        id = self.weapon_info[weap_id].id,
         factory_id = self.weapon_info[weap_id].factory_id .. "_npc",
         blueprint = tweak_data.weapon.factory[self.weapon_info[weap_id].factory_id].default_blueprint,
         name = managers.localization:text(tweak_data.weapon[weapon_id].name_id) .. " (" .. managers.localization:text("NWC_menu_mod_default") .. ")",
@@ -590,7 +569,7 @@ function NWC:set_menu_state(enabled)
 end
 
 function NWC:save()
-  local file = io.open(self.save_path .. "NWCSettings.txt", "w+")
+  local file = io.open(self.save_path .. "NPCWeaponSettings.txt", "w+")
   if file then
     file:write(json.encode(self.settings))
     file:close()
@@ -598,7 +577,7 @@ function NWC:save()
 end
 
 function NWC:load()
-  local file = io.open(self.save_path .. "NWCSettings.txt", "r")
+  local file = io.open(self.save_path .. "NPCWeaponSettings.txt", "r")
   if file then
     local data = json.decode(file:read("*all")) or {}
     file:close()
