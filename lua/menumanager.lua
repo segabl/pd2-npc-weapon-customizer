@@ -47,18 +47,12 @@ NWC.settings = {
 }
 
 function NWC:get_weapon(weap_id)
-  if not weap_id then
+  if not weap_id or not self.weapon_info[weap_id] then
     return
   end
-  local weapon = self.settings.weapons[weap_id]
-  if self.weapons[weap_id] == nil then
-    local weapon_info = self.weapon_info[weap_id]
-    if not weapon_info then
-      self:clear_weapon(weap_id)
-      self.weapons[weap_id] = false
-      return
-    end
-    local crafted = weapon and weapon.category and weapon.slot and managers.blackmarket:get_crafted_category_slot(weapon.category, weapon.slot)
+  local saved_weapon = self.settings.weapons[weap_id] or {}
+  if not self.weapons[weap_id] then
+    local crafted = saved_weapon.category and saved_weapon.slot and managers.blackmarket:get_crafted_category_slot(saved_weapon.category, saved_weapon.slot)
     if crafted and self:has_npc_weapon_version(crafted.factory_id) then
       self.weapons[weap_id] = {
         factory_id = crafted.factory_id .. "_npc",
@@ -66,23 +60,24 @@ function NWC:get_weapon(weap_id)
         cosmetics = crafted.cosmetics,
         name = crafted.custom_name and "\"" .. crafted.custom_name .. "\"" or managers.localization:text(tweak_data.weapon[crafted.weapon_id].name_id),
         icon = managers.blackmarket:get_weapon_icon_path(crafted.weapon_id, crafted.cosmetics),
-        category = weapon.category,
-        slot = weapon.slot,
+        category = saved_weapon.category,
+        slot = saved_weapon.slot,
       }
     else
       self:clear_weapon(weap_id)
-      local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(self.weapon_info[weap_id].factory_id)
+      local weapon_info = self.weapon_info[weap_id]
+      local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon_info.factory_id)
       self.weapons[weap_id] = {
-        factory_id = self.weapon_info[weap_id].factory_id .. "_npc",
-        blueprint = tweak_data.weapon.factory[self.weapon_info[weap_id].factory_id].default_blueprint,
+        factory_id = weapon_info.factory_id .. "_npc",
+        blueprint = tweak_data.weapon.factory[weapon_info.factory_id].default_blueprint,
         name = managers.localization:text(tweak_data.weapon[weapon_id].name_id) .. " (" .. managers.localization:text("NWC_menu_mod_default") .. ")",
         icon = managers.blackmarket:get_weapon_icon_path(weapon_id)
       }
     end
   end
-  if weapon and weapon.random_mods and Utils:IsInGameState() then
+  if saved_weapon.random_mods and Utils:IsInGameState() then
     local w = deep_clone(self.weapons[weap_id])
-    self:create_random_blueprint(w, weapon.random_mods_chance or 0.5)
+    self:create_random_blueprint(w, saved_weapon.random_mods_chance or 0.5)
     return w
   end
   return self.weapons[weap_id]
@@ -582,6 +577,11 @@ function NWC:load()
     local data = json.decode(file:read("*all")) or {}
     file:close()
     table.merge(self.settings, data)
+    for weap_id, _ in pairs(self.settings.weapons) do
+      if not self.weapon_info[weap_id] then
+        self.settings.weapons[weap_id] = nil
+      end
+    end
   end
 end
 
