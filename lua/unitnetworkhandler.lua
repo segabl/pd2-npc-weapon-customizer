@@ -9,7 +9,7 @@ function UnitNetworkHandler:mark_minion(unit, minion_owner_peer_id, convert_enem
   -- replace low def with high def on minion convert
   if NWC.settings.jokers_hq then
     local equipped_unit = unit:inventory():equipped_unit()
-    local old_name = equipped_unit and equipped_unit:base()._old_name
+    local old_name = equipped_unit and equipped_unit:base()._old_unit_name
     if old_name then
       unit:inventory():add_unit_by_name(old_name, true)
     end

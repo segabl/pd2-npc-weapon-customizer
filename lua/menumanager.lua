@@ -1,7 +1,6 @@
 _G.NWC = {}
 NWC.mod_path = ModPath
 NWC.save_path = SavePath
-NWC.is_client = Network:is_client()
 NWC.tweak_setups = {}
 NWC.dropable_weapon_mods = {}
 NWC.weapons = {}

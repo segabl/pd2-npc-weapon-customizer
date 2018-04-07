@@ -23,16 +23,9 @@ function CopInventory:add_unit(new_unit, ...)
     local new_base = new_unit:base()
     local original_id = new_base._name_id
 
-    -- save original name
-    new_base._old_name = old_unit:name()
-
-    -- fix init data
+    -- save original name and set new name
+    new_base._old_unit_name = old_unit:name()
     new_base._name_id = old_base._name_id
-    new_base._damage = old_base._damage
-    new_base:set_ammo_max(tweak_data.weapon[new_base._name_id].AMMO_MAX)
-    new_base:set_ammo_total(new_base:get_ammo_max())
-    new_base:set_ammo_max_per_clip(tweak_data.weapon[new_base._name_id].CLIP_AMMO_MAX)
-    new_base:set_ammo_remaining_in_clip(new_base:get_ammo_max_per_clip())
 
     -- setup tweak data links
     if not NWC.tweak_setups[new_base._name_id] then
@@ -46,6 +39,16 @@ function CopInventory:add_unit(new_unit, ...)
       end
       NWC.tweak_setups[new_base._name_id] = true
     end
+
+    -- fix init data
+    if NWC.settings.keep_types or self._shield_unit_name then
+      new_base:_create_use_setups()
+    end
+    new_base:set_ammo_max(tweak_data.weapon[new_base._name_id].AMMO_MAX)
+    new_base:set_ammo_total(new_base:get_ammo_max())
+    new_base:set_ammo_max_per_clip(tweak_data.weapon[new_base._name_id].CLIP_AMMO_MAX)
+    new_base:set_ammo_remaining_in_clip(new_base:get_ammo_max_per_clip())
+    new_base._damage = old_base._damage
 
     -- disable thq if needed
     if not (NWC:is_joker(self._unit) and NWC.settings.jokers_hq) and not (NWC:is_special(self._unit) and NWC.settings.specials_hq) and not NWC.settings.force_hq then
@@ -86,17 +89,21 @@ end
 local save_original = CopInventory.save
 function CopInventory:save(data, ...)
   save_original(self, data, ...)
-  -- change the sync index to the original weapon's index
-  local old_name = self._equipped_selection and self:equipped_unit():base()._old_name
+  -- change the sync index to the original weapon's index and remove unneeded data
+  local old_name = alive(self:equipped_unit()) and self:equipped_unit():base()._old_unit_name
   if old_name then
     data.equipped_weapon_index = self._get_weapon_sync_index(old_name) or 4
+    data.blueprint_string = nil
+    data.cosmetics_string = "nil-1-0"
+    data.gadget_on = nil
+    data.gadget_color = nil
   end
 end
 
 local _send_equipped_weapon_original = CopInventory._send_equipped_weapon
 function CopInventory:_send_equipped_weapon(...)
   -- same thing here
-  local old_name = self:equipped_unit():base()._old_name
+  local old_name = self:equipped_unit():base()._old_unit_name
   if old_name then
     self._unit:network():send("set_equipped_weapon", self._get_weapon_sync_index(old_name) or 4, "", "nil-1-0")
   else
