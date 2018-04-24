@@ -6,7 +6,8 @@ end
 
 local add_unit_original = CopInventory.add_unit
 function CopInventory:add_unit(new_unit, ...)
-  -- right before a weapon is added to inventory, check for a replacement
+  add_unit_original(self, new_unit, ...)
+  -- when a weapon is added to inventory, check for a replacement
   local replacement_data = self._is_cop_inventory and NWC:get_weapon(new_unit:base()._name_id)
   if replacement_data then
     local old_unit = new_unit
@@ -56,7 +57,7 @@ function CopInventory:add_unit(new_unit, ...)
     end
 
     -- plug old raycast function
-    new_base._fire_raycast = NPCRaycastWeaponBase._fire_raycast
+    new_base._fire_raycast = old_base._fire_raycast
 
     new_base:set_factory_data(replacement_data.factory_id)
     new_base:set_cosmetics_data(replacement_data.cosmetics)
@@ -75,15 +76,8 @@ function CopInventory:add_unit(new_unit, ...)
       new_base:create_second_gun()
     end
 
-    -- remove originally spawned weapon
-    if alive(old_base._second_gun) then
-      old_base._second_gun:set_slot(0)
-      World:delete_unit(old_base._second_gun)
-    end
-    old_unit:set_slot(0)
-    World:delete_unit(old_unit)
+    add_unit_original(self, new_unit, ...)
   end
-  return add_unit_original(self, new_unit, ...)
 end
 
 local save_original = CopInventory.save
