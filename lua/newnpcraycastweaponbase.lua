@@ -32,33 +32,57 @@ function NewNPCRaycastWeaponBase:auto_fire_blank(...)
   return result
 end
 
-local set_laser_enabled_original = NewNPCRaycastWeaponBase.set_laser_enabled
-function NewNPCRaycastWeaponBase:set_laser_enabled(state, ...)
-  -- use existing laser module (if there is one) instead of spawning a new one
-  if self._laser_gadget_base == nil then
-    self._laser_gadget_base = false
+local tweak_data_anim_play_original = NewNPCRaycastWeaponBase.tweak_data_anim_play
+function NewNPCRaycastWeaponBase:tweak_data_anim_play(anim, ...)
+  -- disable fire animations that don't have a unit to prevent crashing
+  if anim == "fire" and self._checked_fire_anim == nil then
+    local unit_anim = self:_get_tweak_data_weapon_animation(anim)
+    for part_id, data in pairs(self._parts) do
+      if data.animations and data.animations[unit_anim] and not data.unit then
+        data.animations[unit_anim] = nil
+      end
+    end
+    self._checked_fire_anim = true
+  end
+  return tweak_data_anim_play_original(self, anim, ...)
+end
+
+function NewNPCRaycastWeaponBase:set_laser_enabled(state)
+  if state and not alive(self._laser_unit) then
     if self._assembly_complete then
+      -- use existing laser module (if there is one) instead of spawning a new one
       local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
       for _, id in ipairs(gadgets) do
         local gadget = self._parts[id]
         local gadget_base = gadget and gadget.unit:base()
         if gadget_base and gadget_base.GADGET_TYPE == "laser" then
-          gadget_base:set_npc()
-          gadget_base:set_color_by_theme("cop_sniper")
-          gadget_base:set_max_distace(10000)
-          self._laser_gadget_base = gadget_base
+          self._laser_unit = gadget.unit
+          self._remove_laser_unit = false
           break
         end
       end
     end
-  end
-  if self._laser_gadget_base then
-    if state then
-      self._laser_gadget_base:set_on()
-    else
-      self._laser_gadget_base:set_off()
+
+    if not self._laser_unit then
+      local spawn_rot = self._unit:rotation()
+      local spawn_pos = self._unit:position()
+      spawn_pos = spawn_pos + spawn_rot:y() * 12 + spawn_rot:z() * 3
+      self._laser_unit = World:spawn_unit(Idstring("units/payday2/weapons/wpn_npc_upg_fl_ass_smg_sho_peqbox/wpn_npc_upg_fl_ass_smg_sho_peqbox"), spawn_pos, spawn_rot)
+      self._unit:link(self._unit:orientation_object():name(), self._laser_unit)
+      self._remove_laser_unit = true
     end
-  else
-    return set_laser_enabled_original(self, state, ...)
+
+    self._laser_unit:base():set_npc()
+    self._laser_unit:base():set_on()
+    self._laser_unit:base():set_color_by_theme("cop_sniper")
+    self._laser_unit:base():set_max_distace(10000)
+  elseif not state and alive(self._laser_unit) then
+    if self._remove_laser_unit then
+      self._laser_unit:unlink()
+      World:delete_unit(self._laser_unit)
+    else
+      self._laser_unit:base():set_off()
+    end
+    self._laser_unit = nil
   end
 end
