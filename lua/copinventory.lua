@@ -96,11 +96,9 @@ end
 
 local _send_equipped_weapon_original = CopInventory._send_equipped_weapon
 function CopInventory:_send_equipped_weapon(...)
-  -- same thing here
-  local old_name = self:equipped_unit():base()._old_unit_name
-  if old_name then
-    self._unit:network():send("set_equipped_weapon", self._get_weapon_sync_index(old_name) or 4, "", "nil-1-0")
-  else
-    _send_equipped_weapon_original(self, ...)
+  -- Don't send equipped unit if it's a replaced one (as the original has been sent before anyways)
+  if self:equipped_unit():base()._old_unit_name then
+    return
   end
+  _send_equipped_weapon_original(self, ...)
 end
