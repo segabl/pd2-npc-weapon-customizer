@@ -142,6 +142,7 @@ function NWC:open_weapon_category_menu(category, weap_id)
       w_unequip = callback(self, self, "select_weapon", weap_id)
     },
     back_callback = function ()
+      self.weapons[weap_id] = nil
       self:set_menu_state(true)
     end,
     topic_id = "bm_menu_" .. category
