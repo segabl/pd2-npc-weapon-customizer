@@ -42,9 +42,7 @@ function CopInventory:add_unit(new_unit, ...)
     end
 
     -- fix init data
-    if NWC.settings.keep_types or self._shield_unit_name then
-      new_base:_create_use_setups()
-    end
+    new_base:_create_use_setups()
     new_base:set_ammo_max(tweak_data.weapon[new_base._name_id].AMMO_MAX)
     new_base:set_ammo_total(new_base:get_ammo_max())
     new_base:set_ammo_max_per_clip(tweak_data.weapon[new_base._name_id].CLIP_AMMO_MAX)
