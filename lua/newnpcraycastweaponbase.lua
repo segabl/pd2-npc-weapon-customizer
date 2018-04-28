@@ -86,3 +86,11 @@ function NewNPCRaycastWeaponBase:set_laser_enabled(state)
     self._laser_unit = nil
   end
 end
+
+local destroy_original = NewNPCRaycastWeaponBase.destroy
+function NewNPCRaycastWeaponBase:destroy(...)
+  if alive(self._collider_unit) then
+    World:delete_unit(self._collider_unit)
+  end
+  return destroy_original(self, ...)
+end
