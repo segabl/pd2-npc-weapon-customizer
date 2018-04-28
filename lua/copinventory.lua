@@ -26,19 +26,19 @@ function CopInventory:add_unit(new_unit, ...)
 
     -- save original name and set new name
     new_base._old_unit_name = old_unit:name()
-    new_base._name_id = old_base._name_id
+    new_base._name_id = new_base._name_id .. (self._shield_unit and "_shield_nwc" or "_nwc")
 
-    -- setup tweak data links
-    if not NWC.tweak_setups[new_base._name_id] then
+    -- setup new tweak data
+    if not tweak_data.weapon[new_base._name_id] then
+      tweak_data.weapon[new_base._name_id] = deep_clone(tweak_data.weapon[old_base._name_id])
       if not NWC.settings.keep_sounds and not tweak_data.weapon[new_base._name_id].sounds.prefix:match("sniper_npc") then
         tweak_data.weapon[new_base._name_id].sounds = tweak_data.weapon[original_id].sounds
       end
-      if not NWC.settings.keep_types and not self._shield_unit_name then
+      if not NWC.settings.keep_types and not self._shield_unit then
         tweak_data.weapon[new_base._name_id].hold = tweak_data.weapon[original_id].hold
         tweak_data.weapon[new_base._name_id].reload = tweak_data.weapon[original_id].reload
         tweak_data.weapon[new_base._name_id].pull_magazine_during_reload = tweak_data.weapon[original_id].pull_magazine_during_reload
       end
-      NWC.tweak_setups[new_base._name_id] = true
     end
 
     -- fix init data
@@ -111,7 +111,7 @@ function CopInventory:drop_weapon(...)
     return drop_weapon_original(self, ...)
   end
 
-  local create_physics_body = function (unit, right)
+  local create_physics_body = function (unit)
     local dropped_col = World:spawn_unit(Idstring("units/payday2/weapons/box_collision/box_collision_medium_ar"), unit:position(), unit:rotation())
     dropped_col:link(Idstring("rp_box_collision_medium"), unit)
     mvector3.set(temp_vec1, unit:rotation():y())
@@ -120,16 +120,16 @@ function CopInventory:drop_weapon(...)
     unit:base()._collider_unit = dropped_col
   end
 
-  if unit then
+  if unit and unit:base() then
     unit:unlink()
     create_physics_body(unit)
     self:_call_listeners("unequip")
     managers.game_play_central:weapon_dropped(unit)
 
-    if unit:base() and unit:base()._second_gun then
-      local second_gun = unit:base()._second_gun
+    local second_gun = unit:base()._second_gun
+    if second_gun then
       second_gun:unlink()
-      create_physics_body(unit, true)
+      create_physics_body(unit)
       managers.game_play_central:weapon_dropped(second_gun)
     end
   end
