@@ -52,7 +52,7 @@ function NWC:get_weapon(weap_id)
   local saved_weapon = self.settings.weapons[weap_id] or {}
   if not self.weapons[weap_id] then
     local crafted = saved_weapon.category and saved_weapon.slot and managers.blackmarket:get_crafted_category_slot(saved_weapon.category, saved_weapon.slot)
-    if crafted and self:has_npc_weapon_version(crafted.factory_id) then
+    if crafted and self:check_npc_weapon_version(crafted.factory_id, crafted.blueprint) then
       self.weapons[weap_id] = {
         factory_id = crafted.factory_id .. "_npc",
         blueprint = crafted.blueprint,
@@ -90,9 +90,18 @@ function NWC:clear_weapon(weap_id)
   end
 end
 
-function NWC:has_npc_weapon_version(factory_id)
+function NWC:check_npc_weapon_version(factory_id, blueprint)
   local factory_data = factory_id and tweak_data.weapon.factory[factory_id .. "_npc"]
-  return factory_data and (not factory_data.custom or DB:has(Idstring("unit"), factory_data.unit:id()))
+  if not factory_data or factory_data.custom and not DB:has(Idstring("unit"), factory_data.unit:id()) then
+    return
+  end
+  for _, part_id in pairs(blueprint or {}) do
+    factory_data = tweak_data.weapon.factory.parts[part_id]
+    if not factory_data or factory_data.custom and not DB:has(Idstring("unit"), factory_data.third_unit:id()) then
+      return
+    end
+  end
+  return true
 end
 
 function NWC:is_joker(unit)
@@ -195,7 +204,8 @@ function NWC:populate_weapons(weap_id, data, gui)
   gui:populate_weapon_category_new(data)
   local weapon = self:get_weapon(weap_id) or {}
   for k, v in ipairs(data) do
-    if v.empty_slot or self:has_npc_weapon_version(managers.weapon_factory:get_factory_id_by_weapon_id(v.name)) then
+    local crafted = not v.empty_slot and managers.blackmarket:get_crafted_category_slot(v.category, v.slot)
+    if v.empty_slot or self:check_npc_weapon_version(crafted.factory_id, crafted.blueprint) then
       v.equipped = not v.empty_slot and weapon.slot == v.slot and weapon.category == v.category
       v.unlocked = true
       v.lock_texture = v.locked_slot and v.lock_texture
