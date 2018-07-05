@@ -9,6 +9,7 @@ NWC.weapon_info = {
   c45_npc = { factory_id = "wpn_fps_pis_g17" },
   raging_bull_npc = { factory_id = "wpn_fps_pis_rage" },
   m4_npc = { factory_id = "wpn_fps_ass_m4" },
+  m4_yellow_npc = { factory_id = "wpn_fps_ass_m4", menu_suffix = " (Taser)" },
   ak47_npc = { factory_id = "wpn_fps_ass_74", menu_suffix = " (Mobster)" },
   r870_npc = { factory_id = "wpn_fps_shot_r870" },
   mossberg_npc = { factory_id = "wpn_fps_shot_huntsman" },
