@@ -98,7 +98,7 @@ function NWC:check_npc_weapon_version(factory_id, blueprint)
   end
   for _, part_id in pairs(blueprint or {}) do
     factory_data = tweak_data.weapon.factory.parts[part_id]
-    if not factory_data or factory_data.custom and not DB:has(Idstring("unit"), factory_data.third_unit:id()) then
+    if not factory_data or factory_data.custom and not (factory_data.third_unit and DB:has(Idstring("unit"), factory_data.third_unit:id())) then
       return
     end
   end
