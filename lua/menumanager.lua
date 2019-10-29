@@ -360,7 +360,7 @@ function NWC:check_create_menu()
   self.menu_items_size = 18
   self.menu_padding = 16
   self.menu_background_color = Color.black:with_alpha(0.75)
-  self.menu_accent_color = Color("0bce99"):with_alpha(0.75)
+  self.menu_accent_color = BeardLib.Options:GetValue("MenuColor"):with_alpha(0.75)--Color("0bce99"):with_alpha(0.75)
   self.menu_highlight_color = self.menu_accent_color:with_alpha(0.075)
 
   self.menu = MenuUI:new({
