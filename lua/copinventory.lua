@@ -8,7 +8,7 @@ local add_unit_original = CopInventory.add_unit
 function CopInventory:add_unit(new_unit, ...)
   add_unit_original(self, new_unit, ...)
   -- when a weapon is added to inventory, check for a replacement
-  local replacement_data = self._is_cop_inventory and NWC:get_weapon(new_unit:base()._name_id)
+  local replacement_data = self._is_cop_inventory and NWC:get_weapon(NWC.weapon_unit_mappings[new_unit:name():key()])
   if replacement_data then
     local old_unit = new_unit
     local old_base = old_unit:base()
@@ -16,9 +16,9 @@ function CopInventory:add_unit(new_unit, ...)
     -- load and spawn replacement weapon
     local factory_weapon = tweak_data.weapon.factory[replacement_data.factory_id]
     local ids_unit_name = Idstring(factory_weapon.unit)
-    if not managers.dyn_resource:is_resource_ready(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE) then
-      managers.dyn_resource:load(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
-    end
+
+    managers.dyn_resource:load(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
+
     new_unit = World:spawn_unit(Idstring(factory_weapon.unit), Vector3(), Rotation())
     
     local new_base = new_unit:base()
@@ -31,7 +31,7 @@ function CopInventory:add_unit(new_unit, ...)
     -- setup new tweak data
     if not tweak_data.weapon[new_base._name_id] then
       tweak_data.weapon[new_base._name_id] = deep_clone(tweak_data.weapon[old_base._name_id])
-      if not NWC.settings.keep_sounds and not tweak_data.weapon[new_base._name_id].sounds.prefix:match("sniper_npc") then
+      if not NWC.settings.keep_sounds and not (NWC.keep_sniper_sounds and tweak_data.weapon[new_base._name_id].sounds.prefix:find("sniper_npc")) then
         tweak_data.weapon[new_base._name_id].sounds = tweak_data.weapon[original_id].sounds
       end
       if not NWC.settings.keep_types and not self._shield_unit then

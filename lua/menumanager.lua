@@ -5,37 +5,32 @@ NWC.tweak_setups = {}
 NWC.dropable_weapon_mods = {}
 NWC.weapons = {}
 NWC.weapon_info = {
-  beretta92_npc = { factory_id = "wpn_fps_pis_beretta" },
-  c45_npc = { factory_id = "wpn_fps_pis_g17" },
-  raging_bull_npc = { factory_id = "wpn_fps_pis_rage" },
-  m4_npc = { factory_id = "wpn_fps_ass_m4" },
-  m4_yellow_npc = { factory_id = "wpn_fps_ass_m4", menu_suffix = " (Taser)" },
-  ak47_npc = { factory_id = "wpn_fps_ass_74", menu_suffix = " (Mobster)" },
-  r870_npc = { factory_id = "wpn_fps_shot_r870" },
-  mossberg_npc = { factory_id = "wpn_fps_shot_huntsman" },
-  mp5_npc = { factory_id = "wpn_fps_smg_mp5" },
-  mp5_tactical_npc = { factory_id = "wpn_fps_smg_mp5", menu_suffix = " (Cloaker)" },
-  mp9_npc = { factory_id = "wpn_fps_smg_mp9" },
-  mac11_npc = { factory_id = "wpn_fps_smg_mac10" },
-  m14_sniper_npc = { factory_id = "wpn_fps_ass_g3", menu_suffix = " (Sniper)" },
-  saiga_npc = { factory_id = "wpn_fps_shot_saiga" },
-  m249_npc = { factory_id = "wpn_fps_lmg_m249" },
-  benelli_npc = { factory_id = "wpn_fps_sho_ben" },
-  g36_npc = { factory_id = "wpn_fps_ass_g36" },
-  ump_npc = { factory_id = "wpn_fps_smg_schakal" },
-  scar_npc = { factory_id = "wpn_fps_ass_scar" },
-  rpk_lmg_npc = { factory_id = "wpn_fps_lmg_rpk" },
-  svd_snp_npc = { factory_id = "wpn_fps_snp_siltstone", menu_suffix = " (Russian Sniper)" },
-  akmsu_smg_npc = { factory_id = "wpn_fps_smg_akmsu" },
-  asval_smg_npc = { factory_id = "wpn_fps_ass_asval" },
-  sr2_smg_npc = { factory_id = "wpn_fps_smg_sr2" },
-  ak47_ass_npc = { factory_id = "wpn_fps_ass_74", menu_suffix = " (Russian)" },
-  x_c45_npc = { factory_id = "wpn_fps_pis_x_g17" },
-  contraband_npc = { factory_id = "wpn_fps_ass_contraband" },
-  svdsil_snp_npc = { factory_id = "wpn_fps_snp_siltstone", menu_suffix = " (Mobster Sniper)" },
-  mini_npc = { factory_id = "wpn_fps_lmg_m134" },
-  heavy_snp_npc = { factory_id = "wpn_fps_ass_g3", menu_suffix = " (ZEAL Sniper)" }
+  beretta92 = { id = "b92fs" },
+  c45 = { id = "glock_17" },
+  raging_bull = { id = "new_raging_bull" },
+  m4 = { id = "new_m4" },
+  m4_yellow = { id = "new_m4", menu_suffix = " (Taser)" },
+  ak47 = { id = "ak74", menu_suffix = " (Mobster)" },
+  mossberg = { id = "huntsman" },
+  mp5 = { id = "new_mp5" },
+  mp5_tactical = { id = "new_mp5", menu_suffix = " (Cloaker)" },
+  mac11 = { id = "mac10" },
+  m14_sniper_npc = { id = "g3", menu_suffix = " (Sniper)" },
+  ump = { id = "schakal" },
+  scar_murky = { id = "scar" },
+  rpk_lmg = { id = "rpk" },
+  svd_snp = { id = "siltstone", menu_suffix = " (Russian Sniper)" },
+  akmsu_smg = { id = "akmsu" },
+  asval_smg = { id = "asval" },
+  sr2_smg = { id = "sr2" },
+  ak47_ass = { id = "ak74", menu_suffix = " (Russian)" },
+  x_c45 = { id = "x_g17" },
+  sg417 = { id = "contraband" },
+  svdsil_snp = { id = "siltstone", menu_suffix = " (Mobster Sniper)" },
+  mini = { id = "m134" },
+  heavy_zeal_sniper = { id = "g3", menu_suffix = " (ZEAL Sniper)" }
 }
+
 NWC.settings = {
   add_animations = true,
   force_hq = false,
@@ -43,37 +38,26 @@ NWC.settings = {
   specials_hq = false,
   keep_types = false,
   keep_sounds = false,
+  keep_sniper_sounds = true,
   weapons = {}
 }
 
 function NWC:get_weapon(weap_id)
-  if not weap_id or not self.weapon_info[weap_id] then
-    return
-  end
   local saved_weapon = self.settings.weapons[weap_id] or {}
   if not self.weapons[weap_id] then
     local crafted = saved_weapon.category and saved_weapon.slot and managers.blackmarket:get_crafted_category_slot(saved_weapon.category, saved_weapon.slot)
-    if crafted and self:check_npc_weapon_version(crafted.factory_id, crafted.blueprint) then
-      self.weapons[weap_id] = {
-        factory_id = crafted.factory_id .. "_npc",
-        blueprint = crafted.blueprint,
-        cosmetics = crafted.cosmetics,
-        name = crafted.custom_name and "\"" .. crafted.custom_name .. "\"" or managers.localization:text(tweak_data.weapon[crafted.weapon_id].name_id),
-        icon = managers.blackmarket:get_weapon_icon_path(crafted.weapon_id, crafted.cosmetics),
-        category = saved_weapon.category,
-        slot = saved_weapon.slot,
-      }
-    else
-      self:clear_weapon(weap_id)
-      local weapon_info = self.weapon_info[weap_id]
-      local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(weapon_info.factory_id)
-      self.weapons[weap_id] = {
-        factory_id = weapon_info.factory_id .. "_npc",
-        blueprint = tweak_data.weapon.factory[weapon_info.factory_id].default_blueprint,
-        name = managers.localization:text(tweak_data.weapon[weapon_id].name_id) .. " (" .. managers.localization:text("NWC_menu_mod_default") .. ")",
-        icon = managers.blackmarket:get_weapon_icon_path(weapon_id)
-      }
+    if not crafted or not self:check_npc_weapon_version(crafted.factory_id, crafted.blueprint) then
+      return
     end
+    self.weapons[weap_id] = {
+      factory_id = crafted.factory_id .. "_npc",
+      blueprint = crafted.blueprint,
+      cosmetics = crafted.cosmetics,
+      name = crafted.custom_name and "\"" .. crafted.custom_name .. "\"" or managers.localization:text(tweak_data.weapon[crafted.weapon_id].name_id),
+      icon = managers.blackmarket:get_weapon_icon_path(crafted.weapon_id, crafted.cosmetics),
+      category = saved_weapon.category,
+      slot = saved_weapon.slot,
+    }
   end
   if saved_weapon.random_mods and Utils:IsInGameState() then
     local w = deep_clone(self.weapons[weap_id])
@@ -246,7 +230,7 @@ function NWC:show_weapon_actions(weap_id)
   })
   diag:Show({
     title = self:npc_weapon_name(weap_id),
-    message = managers.localization:text("NWC_menu_weapon_message", { WEAPON = weapon.name }),
+    message = managers.localization:text(weapon and "NWC_menu_weapon_message" or "NWC_menu_mod_default", { WEAPON = weapon and weapon.name }),
     yes = false,
     w = self.menu._panel:w() / 2,
     title_merge = {
@@ -298,6 +282,7 @@ function NWC:show_weapon_actions(weap_id)
         help = "NWC_menu_use_random_mods_desc",
         localized = true,
         value = self.settings.weapons[weap_id] and self.settings.weapons[weap_id].random_mods,
+        enabled = weapon and true or false,
         on_callback = function (item) self:change_menu_weapon_setting(item, weap_id) end
       })
       menu:Slider({
@@ -331,8 +316,10 @@ function NWC:show_weapon_actions(weap_id)
 end
 
 function NWC:npc_weapon_name(weap_id)
-  local weapon_id = managers.weapon_factory:get_weapon_id_by_factory_id(self.weapon_info[weap_id].factory_id)
-  return managers.localization:text(tweak_data.weapon[weapon_id].name_id) .. (self.weapon_info[weap_id].menu_suffix or "")
+  local info = self.weapon_info[weap_id]
+  local w = info and info.id or weap_id
+  local suffix = info and info.menu_suffix or ""
+  return tweak_data.weapon[w] and (managers.localization:text(tweak_data.weapon[w].name_id) .. suffix) or w:pretty(true)
 end
 
 function NWC:fit_texture(item, h_offset)
@@ -433,6 +420,14 @@ function NWC:check_create_menu()
     value = self.settings.keep_sounds
   })
 
+  base_settings:Toggle({
+    name = "keep_sniper_sounds",
+    text = "NWC_menu_keep_sniper_sounds",
+    help = "NWC_menu_keep_sniper_sounds_desc",
+    on_callback = function (item) self:change_menu_setting(item) end,
+    value = self.settings.keep_sniper_sounds
+  })
+
   base_settings:Divider({
     h = self.menu_padding * 2
   })
@@ -499,29 +494,26 @@ function NWC:check_create_menu()
   })
   self.menu_weapon_settings = weapon_settings
   
-  self.sorted_weap_ids = table.map_keys(self.weapon_info, function (a, b) return self:npc_weapon_name(a) < self:npc_weapon_name(b) end)
   for i, weap_id in ipairs(self.sorted_weap_ids) do
     local weap = self:get_weapon(weap_id)
-    if weap then
-      local button = weapon_settings:ImageButton({
-        name = "weapon_button_" .. weap_id,
-        texture = weap.icon,
-        img_color = Color.white:with_alpha(weap.slot and 1 or 0.2),
-        help_localized  = false,
-        help = weap.name,
-        w = menu_w_right / 3 - self.menu_padding,
-        h = 128,
-        on_callback = function (item) self:show_weapon_actions(weap_id) end
-      })
-      self:fit_texture(button, self.menu_padding / 2 + 18)
-      button:Panel():text({
-        text = self:npc_weapon_name(weap_id),
-        font = "fonts/font_large_mf",
-        align = "center",
-        font_size = self.menu_items_size,
-        y = self.menu_padding / 2
-      })
-    end
+    local button = weapon_settings:ImageButton({
+      name = "weapon_button_" .. weap_id,
+      texture = weap and weap.icon or "guis/textures/pd2/none_icon",
+      img_color = Color.white:with_alpha(weap and weap.slot and 1 or 0.2),
+      help_localized  = false,
+      help = weap and weap.name,
+      w = menu_w_right / 3 - self.menu_padding,
+      h = 128,
+      on_callback = function (item) self:show_weapon_actions(weap_id) end
+    })
+    self:fit_texture(button, self.menu_padding / 2 + 18)
+    button:Panel():text({
+      text = self:npc_weapon_name(weap_id),
+      font = "fonts/font_large_mf",
+      align = "center",
+      font_size = self.menu_items_size,
+      y = self.menu_padding / 2
+    })
   end
   
 end
@@ -550,11 +542,12 @@ function NWC:refresh_menu()
   for _, weap_id in ipairs(self.sorted_weap_ids) do
     
     local weap = self:get_weapon(weap_id)
-    local weapon_button = weap and self.menu_weapon_settings:GetItem("weapon_button_" .. weap_id)
+    local weapon_button = self.menu_weapon_settings:GetItem("weapon_button_" .. weap_id)
     if weapon_button then
-      weapon_button.help = weap.name
-      weapon_button.img:set_image(weap.icon)
-      weapon_button.img:set_color(Color.white:with_alpha(weap.slot and 1 or 0.2))
+      weapon_button.help = weap and weap.name
+      weapon_button.img:set_image(weap and weap.icon or "guis/textures/pd2/none_icon")
+      weapon_button.img:set_color(Color.white:with_alpha(weap and weap.slot and 1 or 0.2))
+      self:fit_texture(weapon_button, self.menu_padding / 2 + 18)
     end
     
   end
@@ -588,12 +581,12 @@ function NWC:load()
     local data = json.decode(file:read("*all")) or {}
     file:close()
     table.merge(self.settings, data)
-    for weap_id, _ in pairs(self.settings.weapons) do
-      if not self.weapon_info[weap_id] then
-        self.settings.weapons[weap_id] = nil
-      end
-    end
   end
+  self.weapon_unit_mappings = {}
+  for i, v in pairs(tweak_data.character.weap_unit_names) do
+    self.weapon_unit_mappings[v:key()] = tweak_data.character.weap_ids[i]
+  end
+  self.sorted_weap_ids = table.map_values(self.weapon_unit_mappings, function (a, b) return self:npc_weapon_name(a) < self:npc_weapon_name(b) end)
 end
 
 Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInitNWC", function(loc)
