@@ -6,7 +6,12 @@
   "color" : "0.043 0.808 0.6",
   "image" : "mod.png",
   "version" : "1.8",
-  "updates" : [ { "identifier" : "nwc" } ],
+  "updates" : [
+    {
+      "identifier" : "pd2-npc-weapon-customizer",
+      "host": { "meta": "http://updates.hoppip.at/pd2-npc-weapon-customizer" }
+    }
+  ],
   "hooks" : [
     { "hook_id" : "lib/managers/menumanager", "script_path" : "lua/menumanager.lua" },
     { "hook_id" : "lib/network/handlers/unitnetworkhandler", "script_path" : "lua/unitnetworkhandler.lua" },
