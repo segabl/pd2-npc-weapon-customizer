@@ -8,7 +8,8 @@ local add_unit_original = CopInventory.add_unit
 function CopInventory:add_unit(new_unit, ...)
   add_unit_original(self, new_unit, ...)
   -- when a weapon is added to inventory, check for a replacement
-  local replacement_data = self._is_cop_inventory and NWC:get_weapon(NWC.weapon_unit_mappings[new_unit:name():key()])
+  local quality = NWC:get_quality_setting(self._unit)
+  local replacement_data = self._is_cop_inventory and quality > 1 and NWC:get_weapon(NWC.weapon_unit_mappings[new_unit:name():key()])
   if replacement_data then
     local old_unit = new_unit
     local old_base = old_unit:base()
@@ -20,7 +21,7 @@ function CopInventory:add_unit(new_unit, ...)
     managers.dyn_resource:load(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
 
     new_unit = World:spawn_unit(Idstring(factory_weapon.unit), Vector3(), Rotation())
-    
+
     local new_base = new_unit:base()
     local original_id = new_base._name_id
 
@@ -50,7 +51,7 @@ function CopInventory:add_unit(new_unit, ...)
     new_base._damage = old_base._damage
 
     -- disable thq if needed
-    if not (NWC:is_joker(self._unit) and NWC.settings.jokers_hq) and not (NWC:is_special(self._unit) and NWC.settings.specials_hq) and not NWC.settings.force_hq then
+    if quality < 3 then
       new_base.use_thq = function () return false end
     end
 

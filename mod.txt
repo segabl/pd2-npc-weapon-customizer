@@ -1,11 +1,11 @@
 {
   "name" : "NPC Weapon Customizer",
   "description" : "Customize the weapons and mods NPCs will use",
-  "author" : "Shiny Hoppip",
+  "author" : "Hoppip",
   "blt_version" : 2,
   "color" : "0.043 0.808 0.6",
   "image" : "mod.png",
-  "version" : "1.8",
+  "version" : "1.9",
   "updates" : [
     {
       "identifier" : "pd2-npc-weapon-customizer",

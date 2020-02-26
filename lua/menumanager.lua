@@ -33,9 +33,9 @@ NWC.weapon_info = {
 
 NWC.settings = {
   add_animations = true,
-  force_hq = false,
-  jokers_hq = true,
-  specials_hq = false,
+  quality_cops = 2,
+  quality_jokers = 2,
+  quality_specials = 2,
   keep_types = false,
   keep_sounds = false,
   keep_sniper_sounds = true,
@@ -106,6 +106,16 @@ function NWC:is_special(unit)
   end
   local tweak_table = unit:base()._tweak_table
   return (tweak_table:match("boss") or tweak_data.character[tweak_table].priority_shout) and true
+end
+
+function NWC:get_quality_setting(unit)
+  if NWC:is_joker(unit) then
+    return self.settings.quality_jokers
+  elseif NWC:is_special(unit) then
+    return self.settings.quality_specials
+  else
+    return self.settings.quality_cops
+  end
 end
 
 function NWC:create_random_blueprint(weapon, random_mods_chance)
@@ -368,7 +378,7 @@ function NWC:check_create_menu()
     localized = true,
     use_default_close_key = true
   })
-  
+
   local menu_w = self.menu._panel:w()
   local menu_h = self.menu._panel:h()
 
@@ -450,30 +460,34 @@ function NWC:check_create_menu()
     position = { self.menu_padding, base_settings:Bottom() }
   })
 
-  quality_settings:Toggle({
-    name = "force_hq",
-    text = "NWC_menu_force_hq",
-    help = "NWC_menu_force_hq_desc",
+  quality_settings:ComboBox({
+    name = "quality_cops",
+    text = "NWC_menu_quality_cops",
+    help = "NWC_menu_quality_cops_desc",
+    items = { "NWC_menu_quality_npc", "NWC_menu_quality_third", "NWC_menu_quality_first" },
+    value = self.settings.quality_cops,
+    free_typing = false,
     on_callback = function (item) self:change_menu_setting(item) end,
-    value = self.settings.force_hq,
   })
 
-  quality_settings:Toggle({
-    name = "jokers_hq",
-    text = "NWC_menu_jokers_hq",
-    help = "NWC_menu_jokers_hq_desc",
-    enabled = not self.settings.force_hq,
+  quality_settings:ComboBox({
+    name = "quality_specials",
+    text = "NWC_menu_quality_specials",
+    help = "NWC_menu_quality_specials_desc",
+    items = { "NWC_menu_quality_npc", "NWC_menu_quality_third", "NWC_menu_quality_first" },
+    value = self.settings.quality_specials,
+    free_typing = false,
     on_callback = function (item) self:change_menu_setting(item) end,
-    value = self.settings.jokers_hq
   })
 
-  quality_settings:Toggle({
-    name = "specials_hq",
-    text = "NWC_menu_specials_hq",
-    help = "NWC_menu_specials_hq_desc",
-    enabled = not self.settings.force_hq,
+  quality_settings:ComboBox({
+    name = "quality_jokers",
+    text = "NWC_menu_quality_jokers",
+    help = "NWC_menu_quality_jokers_desc",
+    items = { "NWC_menu_quality_npc", "NWC_menu_quality_third", "NWC_menu_quality_first" },
+    value = self.settings.quality_jokers,
+    free_typing = false,
     on_callback = function (item) self:change_menu_setting(item) end,
-    value = self.settings.specials_hq
   })
 
   menu:Button({
@@ -498,7 +512,7 @@ function NWC:check_create_menu()
     position = { base_settings:Right() + self.menu_padding, title:Bottom() + self.menu_padding }
   })
   self.menu_weapon_settings = weapon_settings
-  
+
   for i, weap_id in ipairs(self.sorted_weap_ids) do
     local weap = self:get_weapon(weap_id)
     local button = weapon_settings:ImageButton({
@@ -520,14 +534,13 @@ function NWC:check_create_menu()
       y = self.menu_padding / 2
     })
   end
-  
+
 end
 
 function NWC:change_menu_setting(item)
   self.settings[item:Name()] = item:Value()
-  if item:Name() == "force_hq" then
-    item.parent:GetItem("jokers_hq"):SetEnabled(not self.settings[item:Name()])
-    item.parent:GetItem("specials_hq"):SetEnabled(not self.settings[item:Name()])
+  if item:Name() == "quality_cops" and item:Value() > 2 then
+    QuickMenu:new(managers.localization:text("dialog_warning_title"), managers.localization:text("NWC_menu_quality_warning"), {}, true)
   end
   self:save()
 end
@@ -545,7 +558,6 @@ end
 
 function NWC:refresh_menu()
   for _, weap_id in ipairs(self.sorted_weap_ids) do
-    
     local weap = self:get_weapon(weap_id)
     local weapon_button = self.menu_weapon_settings:GetItem("weapon_button_" .. weap_id)
     if weapon_button then
@@ -554,7 +566,6 @@ function NWC:refresh_menu()
       weapon_button.img:set_color(Color.white:with_alpha(weap and weap.slot and 1 or 0.2))
       self:fit_texture(weapon_button, self.menu_padding / 2 + 18)
     end
-    
   end
 end
 
@@ -595,12 +606,12 @@ function NWC:load()
 end
 
 Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInitNWC", function(loc)
-  
+
   local system_language_key = SystemInfo:language():key()
   local system_is_english = system_language_key == Idstring("english"):key()
   local blt_language = BLT.Localization:get_language().language
   local language = "english"
-  
+
   for _, filename in pairs(file.GetFiles(NWC.mod_path .. "loc/") or {}) do
     local str = filename:match("^(.*).txt$")
     if str then
@@ -613,14 +624,14 @@ Hooks:Add("LocalizationManagerPostInit", "LocalizationManagerPostInitNWC", funct
       end
     end
   end
-  
+
   loc:load_localization_file(NWC.mod_path .. "loc/english.txt")
   loc:load_localization_file(NWC.mod_path .. "loc/" .. language .. ".txt")
 
 end)
 
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenusNWC", function(menu_manager, nodes)
-  
+
   if not BeardLib then
     log("[NPCWeaponCustomizer] ERROR: BeardLib is required for this mod to work properly!")
     return
