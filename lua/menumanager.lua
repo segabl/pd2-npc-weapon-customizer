@@ -130,7 +130,7 @@ function NWC:create_random_blueprint(weapon, random_mods_chance)
     if math.random() < random_mods_chance then
       local part_data = table.random(parts_data)
       if part_data then
-        factory_data = tweak_data.weapon.factory.parts[part_data[1]]
+        local factory_data = tweak_data.weapon.factory.parts[part_data[1]]
         if factory_data and (not factory_data.custom or factory_data.third_unit and DB:has(unit_ids, factory_data.third_unit:id())) then
           managers.weapon_factory:change_part_blueprint_only(weapon.factory_id, part_data[1], weapon.blueprint)
         end
