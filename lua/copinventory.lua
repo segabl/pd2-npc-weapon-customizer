@@ -36,6 +36,7 @@ function CopInventory:add_unit(new_unit, ...)
         tweak_data.weapon[new_base._name_id].sounds = tweak_data.weapon[original_id].sounds
       end
       if not NWC.settings.keep_types and not self._shield_unit then
+        tweak_data.weapon[new_base._name_id].anim_usage = tweak_data.weapon[original_id].anim_usage or tweak_data.weapon[original_id].usage
         tweak_data.weapon[new_base._name_id].hold = tweak_data.weapon[original_id].hold
         tweak_data.weapon[new_base._name_id].reload = tweak_data.weapon[original_id].reload
         tweak_data.weapon[new_base._name_id].pull_magazine_during_reload = tweak_data.weapon[original_id].pull_magazine_during_reload
