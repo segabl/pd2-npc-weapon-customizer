@@ -32,7 +32,7 @@ function CopInventory:add_unit(new_unit, ...)
     -- setup new tweak data
     if not tweak_data.weapon[new_base._name_id] then
       tweak_data.weapon[new_base._name_id] = deep_clone(tweak_data.weapon[old_base._name_id])
-      if not NWC.settings.keep_sounds and not (NWC.keep_sniper_sounds and tweak_data.weapon[new_base._name_id].sounds.prefix:find("sniper_npc")) then
+      if not NWC.settings.keep_sounds and not (NWC.settings.keep_sniper_sounds and tweak_data.weapon[new_base._name_id].sounds.prefix:find("sniper_npc")) then
         tweak_data.weapon[new_base._name_id].sounds = tweak_data.weapon[original_id].sounds
       end
       if not NWC.settings.keep_types and not self._shield_unit then
