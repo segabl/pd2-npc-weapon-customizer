@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<mod name="NPC Weapon Customizer">
+
+	<hooks script_path="mod.lua" hook_id="lib/">
+		<post :hook_id="managers/menumanager"/>
+		<group :hook_id="units/enemies/cop/">
+			<post :hook_id="actions/full_body/copactionhurt"/>
+			<post :hook_id="copinventory"/>
+		</group>
+		<post :hook_id="units/player_team/teamaiinventory"/>
+		<post :hook_id="units/weapons/newnpcraycastweaponbase"/>
+	</hooks>
+
+	<!-- weapons box collision -->
+	<assets base_path="assets/">
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_small.cooked_physics"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_small.model"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_small.object"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_small.unit"/>
+
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_medium.cooked_physics"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_medium.model"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_medium.object"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_medium.unit"/>
+
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_large.cooked_physics"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_large.model"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_large.object"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_large.unit"/>
+
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_lmg.cooked_physics"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_lmg.model"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_lmg.object"/>
+		<file name="units/payday2/weapons/box_collision/box_collision_weapon_lmg.unit"/>
+	</assets>
+
+</mod>

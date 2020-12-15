@@ -143,6 +143,36 @@ if not NWC then
 		end
 	end
 
+	local collision_category = {
+		assault_rifle = "units/payday2/weapons/box_collision/box_collision_weapon_medium",
+		lmg = "units/payday2/weapons/box_collision/box_collision_weapon_lmg",
+		minigun = "units/payday2/weapons/box_collision/box_collision_weapon_lmg",
+		pistol = "units/payday2/weapons/box_collision/box_collision_weapon_small",
+		shotgun = "units/payday2/weapons/box_collision/box_collision_weapon_large",
+		snp = "units/payday2/weapons/box_collision/box_collision_weapon_large"
+	}
+	local id_redirects = {
+		tecci_crew = collision_category.lmg
+	}
+	function NWC:get_collision_box_unit_name(name_id)
+		local tweak = name_id and tweak_data.weapon[name_id]
+		if not tweak then
+			return collision_category.assault_rifle
+		end
+		if id_redirects[name_id] then
+			return id_redirects[name_id]
+		end
+		if tweak.hold == "pistol" then
+			return collision_category.pistol
+		end
+		for _, v in pairs(tweak.categories) do
+			if collision_category[v] then
+				return collision_category[v]
+			end
+		end
+		return collision_category.assault_rifle
+	end
+
 	function NWC:open_weapon_category_menu(category, weap_id)
 		local new_node_data = {
 			prev_node_data = false,

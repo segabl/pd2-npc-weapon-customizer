@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<dynamic_object>
+	<diesel orientation_object="rp_box_collision_weapon" />
+	<bodies>
+		<body name="body" enabled="true" template="debris" pushed_by_mover="false">
+			<object name="rp_box_collision_weapon" />
+			<object name="c_box" collision_type="box" padding="-2" mass="3" />
+			<object name="c_sphere_01" collision_type="sphere" mass="0.1" />
+			<object name="c_sphere_02" collision_type="sphere" mass="0.1" />
+			<object name="c_sphere_03" collision_type="sphere" mass="1" />
+		</body>
+	</bodies>
+</dynamic_object>

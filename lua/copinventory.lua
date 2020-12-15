@@ -25,7 +25,9 @@ function CopInventory:add_unit(new_unit, ...)
 
 		-- save original name and set new name
 		new_base._old_unit_name = old_unit:name()
+		new_base._player_name_id = original_id:gsub("_crew", "")
 		new_base._name_id = new_base._name_id .. (self._shield_unit and "_shield_nwc" or "_nwc")
+		new_base._original_id =  original_id
 
 		-- setup new tweak data
 		if not tweak_data.weapon[new_base._name_id] then
@@ -100,7 +102,6 @@ function CopInventory:_send_equipped_weapon(...)
 end
 
 -- create physics colliders for dropped weapons
-local temp_vec1 = Vector3()
 local drop_weapon_original = CopInventory.drop_weapon
 function CopInventory:drop_weapon(...)
 	local selection = self._available_selections[self._equipped_selection]
@@ -111,13 +112,11 @@ function CopInventory:drop_weapon(...)
 	end
 
 	local function drop(weapon_unit)
+		local name_id = weapon_unit:base()._original_id or weapon_unit:base()._name_id
+		local collider = World:spawn_unit(Idstring(NWC:get_collision_box_unit_name(name_id)), weapon_unit:position(), weapon_unit:rotation())
+		weapon_unit:base()._collider_unit = collider
 		weapon_unit:unlink()
-		local dropped_col = World:spawn_unit(Idstring("units/payday2/weapons/box_collision/box_collision_medium_ar"), weapon_unit:position(), weapon_unit:rotation())
-		dropped_col:link(Idstring("rp_box_collision_medium"), weapon_unit)
-		mvector3.set(temp_vec1, weapon_unit:rotation():y())
-		mvector3.multiply(temp_vec1, math.random(75, 200))
-		dropped_col:push(10, temp_vec1)
-		weapon_unit:base()._collider_unit = dropped_col
+		collider:link(collider:orientation_object():name(), weapon_unit, weapon_unit:orientation_object():name())
 		managers.game_play_central:weapon_dropped(weapon_unit)
 	end
 
