@@ -110,26 +110,22 @@ function CopInventory:drop_weapon(...)
 		return drop_weapon_original(self, ...)
 	end
 
-	local function create_physics_body(unit)
-		local dropped_col = World:spawn_unit(Idstring("units/payday2/weapons/box_collision/box_collision_medium_ar"), unit:position(), unit:rotation())
-		dropped_col:link(Idstring("rp_box_collision_medium"), unit)
-		mvector3.set(temp_vec1, unit:rotation():y())
+	local function drop(weapon_unit)
+		weapon_unit:unlink()
+		local dropped_col = World:spawn_unit(Idstring("units/payday2/weapons/box_collision/box_collision_medium_ar"), weapon_unit:position(), weapon_unit:rotation())
+		dropped_col:link(Idstring("rp_box_collision_medium"), weapon_unit)
+		mvector3.set(temp_vec1, weapon_unit:rotation():y())
 		mvector3.multiply(temp_vec1, math.random(75, 200))
 		dropped_col:push(10, temp_vec1)
-		unit:base()._collider_unit = dropped_col
+		weapon_unit:base()._collider_unit = dropped_col
+		managers.game_play_central:weapon_dropped(weapon_unit)
 	end
 
 	if unit and unit:base() then
-		unit:unlink()
-		create_physics_body(unit)
 		self:_call_listeners("unequip")
-		managers.game_play_central:weapon_dropped(unit)
-
-		local second_gun = unit:base()._second_gun
-		if second_gun then
-			second_gun:unlink()
-			create_physics_body(unit)
-			managers.game_play_central:weapon_dropped(second_gun)
+		drop(unit)
+		if unit:base()._second_gun then
+			drop(unit:base()._second_gun)
 		end
 	end
 end
