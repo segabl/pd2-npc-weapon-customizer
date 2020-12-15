@@ -5,32 +5,23 @@ for k, v in pairs(NPCRaycastWeaponBase) do
 end
 
 -- add weapon firing animation
-local fire_original = NewNPCRaycastWeaponBase.fire
-function NewNPCRaycastWeaponBase:fire(...)
-	local result = fire_original(self, ...)
+Hooks:PostHook(NewNPCRaycastWeaponBase, "fire", "fire_nwc", function (self)
 	if NWC.settings.add_animations and self._assembly_complete then
 		self:tweak_data_anim_play("fire")
 	end
-	return result
-end
+end)
 
-local fire_blank_original = NewNPCRaycastWeaponBase.fire_blank
-function NewNPCRaycastWeaponBase:fire_blank(...)
-	local result = fire_blank_original(self, ...)
+Hooks:PostHook(NewNPCRaycastWeaponBase, "fire_blank", "fire_blank_nwc", function (self)
 	if NWC.settings.add_animations and self._assembly_complete then
 		self:tweak_data_anim_play("fire")
 	end
-	return result
-end
+end)
 
-local auto_fire_blank_original = NewNPCRaycastWeaponBase.auto_fire_blank
-function NewNPCRaycastWeaponBase:auto_fire_blank(...)
-	local result = auto_fire_blank_original(self, ...)
+Hooks:PostHook(NewNPCRaycastWeaponBase, "auto_fire_blank", "auto_fire_blank_nwc", function (self)
 	if NWC.settings.add_animations and self._assembly_complete then
 		self:tweak_data_anim_play("fire")
 	end
-	return result
-end
+end)
 
 -- disable fire animations that don't have a unit to prevent crashing
 Hooks:PreHook(NewNPCRaycastWeaponBase, "tweak_data_anim_play", "tweak_data_anim_play_nwc", function (self, anim)
