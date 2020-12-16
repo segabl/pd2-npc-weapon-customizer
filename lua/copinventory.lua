@@ -105,25 +105,22 @@ end
 local drop_weapon_original = CopInventory.drop_weapon
 function CopInventory:drop_weapon(...)
 	local selection = self._available_selections[self._equipped_selection]
-	local unit = selection and selection.unit
+	local weapon_unit = selection and selection.unit
 
-	if unit and unit:damage() then
+	if weapon_unit and weapon_unit:damage() then
 		return drop_weapon_original(self, ...)
 	end
 
-	local function drop(weapon_unit)
-		local collider = World:spawn_unit(Idstring(NWC:get_collision_box_unit_name(weapon_unit)), weapon_unit:oobb():center(), weapon_unit:rotation())
-		weapon_unit:base()._collider_unit = collider
-		weapon_unit:unlink()
-		collider:link(collider:orientation_object():name(), weapon_unit)
-		managers.game_play_central:weapon_dropped(weapon_unit)
-	end
-
-	if unit and unit:base() then
+	if weapon_unit and weapon_unit:base() then
 		self:_call_listeners("unequip")
-		drop(unit)
-		if unit:base()._second_gun then
-			drop(unit:base()._second_gun)
+
+		NWC:spawn_collision_box(weapon_unit)
+		managers.game_play_central:weapon_dropped(weapon_unit)
+
+		weapon_unit = weapon_unit:base()._second_gun
+		if weapon_unit then
+			NWC:spawn_collision_box(weapon_unit)
+			managers.game_play_central:weapon_dropped(weapon_unit)
 		end
 	end
 end

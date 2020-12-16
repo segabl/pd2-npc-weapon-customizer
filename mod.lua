@@ -164,27 +164,41 @@ if not NWC then
 		pistol = collision_category.pistol,
 		bullpup = collision_category.assault_rifle
 	}
-	function NWC:get_collision_box_unit_name(weapon_unit)
+	local tmp_vec = Vector3()
+	function NWC:spawn_collision_box(weapon_unit)
 		local name_id = weapon_unit:base()._original_id
-		if name_id and id_redirects[name_id] then
-			return id_redirects[name_id]
-		end
 		local tweak = weapon_unit:base():weapon_tweak_data()
-		if hold_redirects[tweak.hold] then
-			return hold_redirects[tweak.hold]
-		elseif type(tweak.hold) == "table" then
-			for _, v in ipairs(tweak.hold) do
-				if hold_redirects[v] then
-					return hold_redirects[v]
+		local collider_name
+		if name_id and id_redirects[name_id] then
+			collider_name = id_redirects[name_id]
+		elseif hold_redirects[tweak.hold] then
+			collider_name = hold_redirects[tweak.hold]
+		else
+			if type(tweak.hold) == "table" then
+				for _, v in ipairs(tweak.hold) do
+					if hold_redirects[v] then
+						collider_name = hold_redirects[v]
+						break
+					end
+				end
+			end
+			if not collider_name then
+				collider_name = collision_category.assault_rifle
+				for _, v in ipairs(tweak.categories) do
+					if collision_category[v] then
+						collider_name = collision_category[v]
+						break
+					end
 				end
 			end
 		end
-		for _, v in ipairs(tweak.categories) do
-			if collision_category[v] then
-				return collision_category[v]
-			end
-		end
-		return collision_category.assault_rifle
+		local collider_unit = World:spawn_unit(Idstring(collider_name), weapon_unit:oobb():center(), weapon_unit:rotation())
+		weapon_unit:unlink()
+		weapon_unit:base()._collider_unit = collider_unit
+		collider_unit:link(collider_unit:orientation_object():name(), weapon_unit)
+		mvector3.set(tmp_vec, weapon_unit:rotation():z())
+		mvector3.multiply(tmp_vec, math.random(200, 300))
+		collider_unit:push(10, tmp_vec)
 	end
 
 	function NWC:open_weapon_category_menu(category, weap_id)
