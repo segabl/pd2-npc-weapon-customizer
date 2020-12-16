@@ -112,11 +112,10 @@ function CopInventory:drop_weapon(...)
 	end
 
 	local function drop(weapon_unit)
-		local name_id = weapon_unit:base()._original_id or weapon_unit:base()._name_id
-		local collider = World:spawn_unit(Idstring(NWC:get_collision_box_unit_name(name_id)), weapon_unit:position(), weapon_unit:rotation())
+		local collider = World:spawn_unit(Idstring(NWC:get_collision_box_unit_name(weapon_unit)), weapon_unit:oobb():center(), weapon_unit:rotation())
 		weapon_unit:base()._collider_unit = collider
 		weapon_unit:unlink()
-		collider:link(collider:orientation_object():name(), weapon_unit, weapon_unit:orientation_object():name())
+		collider:link(collider:orientation_object():name(), weapon_unit)
 		managers.game_play_central:weapon_dropped(weapon_unit)
 	end
 

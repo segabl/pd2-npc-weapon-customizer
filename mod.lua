@@ -152,20 +152,34 @@ if not NWC then
 		snp = "units/payday2/weapons/box_collision/box_collision_weapon_large"
 	}
 	local id_redirects = {
+		aa12_crew = collision_category.assault_rifle,
+		desertfox_crew = collision_category.assault_rifle,
+		g3_crew = collision_category.snp,
+		m14_crew = collision_category.snp,
+		saiga_crew = collision_category.assault_rifle,
+		serbu_crew = collision_category.assault_rifle,
 		tecci_crew = collision_category.lmg
 	}
-	function NWC:get_collision_box_unit_name(name_id)
-		local tweak = name_id and tweak_data.weapon[name_id]
-		if not tweak then
-			return collision_category.assault_rifle
-		end
-		if id_redirects[name_id] then
+	local hold_redirects = {
+		pistol = collision_category.pistol,
+		bullpup = collision_category.assault_rifle
+	}
+	function NWC:get_collision_box_unit_name(weapon_unit)
+		local name_id = weapon_unit:base()._original_id
+		if name_id and id_redirects[name_id] then
 			return id_redirects[name_id]
 		end
-		if tweak.hold == "pistol" then
-			return collision_category.pistol
+		local tweak = weapon_unit:base():weapon_tweak_data()
+		if hold_redirects[tweak.hold] then
+			return hold_redirects[tweak.hold]
+		elseif type(tweak.hold) == "table" then
+			for _, v in ipairs(tweak.hold) do
+				if hold_redirects[v] then
+					return hold_redirects[v]
+				end
+			end
 		end
-		for _, v in pairs(tweak.categories) do
+		for _, v in ipairs(tweak.categories) do
 			if collision_category[v] then
 				return collision_category[v]
 			end
