@@ -32,6 +32,7 @@ if not NWC then
 		mini = { id = "m134" },
 		heavy_zeal_sniper = { id = "g3", menu_suffix = " (ZEAL Sniper)" }
 	}
+	NWC.weapon_unit_mappings = {}
 
 	NWC.settings = {
 		add_animations = true,
