@@ -114,12 +114,12 @@ function CopInventory:drop_weapon(...)
 	if weapon_unit and weapon_unit:base() then
 		self:_call_listeners("unequip")
 
-		NWC:spawn_collision_box(weapon_unit)
+		NWC:spawn_collision_box(weapon_unit, self._weapon_drop_dir, self._weapon_drop_vel)
 		managers.game_play_central:weapon_dropped(weapon_unit)
 
 		weapon_unit = weapon_unit:base()._second_gun
 		if weapon_unit then
-			NWC:spawn_collision_box(weapon_unit)
+			NWC:spawn_collision_box(weapon_unit, self._weapon_drop_dir, self._weapon_drop_vel)
 			managers.game_play_central:weapon_dropped(weapon_unit)
 		end
 	end

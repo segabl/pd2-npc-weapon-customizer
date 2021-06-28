@@ -166,7 +166,7 @@ if not NWC then
 		bullpup = collision_category.assault_rifle
 	}
 	local tmp_vec = Vector3()
-	function NWC:spawn_collision_box(weapon_unit)
+	function NWC:spawn_collision_box(weapon_unit, dir, vel)
 		local name_id = weapon_unit:base()._original_id
 		local tweak = weapon_unit:base():weapon_tweak_data()
 		local collider_name
@@ -197,8 +197,8 @@ if not NWC then
 		weapon_unit:unlink()
 		weapon_unit:base()._collider_unit = collider_unit
 		collider_unit:link(collider_unit:orientation_object():name(), weapon_unit)
-		mvector3.set(tmp_vec, weapon_unit:rotation():z())
-		mvector3.multiply(tmp_vec, math.random(200, 300))
+		mvector3.set(tmp_vec, dir or weapon_unit:rotation():z())
+		mvector3.multiply(tmp_vec, vel or math.random(100, 200))
 		collider_unit:push(10, tmp_vec)
 	end
 
