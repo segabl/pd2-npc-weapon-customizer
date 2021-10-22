@@ -22,6 +22,8 @@
 	"NWC_menu_keep_sounds_desc" : "Waffen werden die originalen Schussgeräusche benutzen",
 	"NWC_menu_keep_sniper_sounds" : "Originale Sniper Geräusche verwenden",
 	"NWC_menu_keep_sniper_sounds_desc" : "Sniper werden die originalen Schussgeräusche benutzen",
+	"NWC_menu_allow_flashlights" : "Taschenlampen erlauben",
+	"NWC_menu_allow_flashlights_desc" : "Erlaubt es Gegnern, die Taschenlampen auf ihren Waffen zu verwenden falls die Mission Taschenlampen aktiviert",
 	"NWC_menu_locked_slot" : "Inkompatible Mod-Waffe oder Mod-Waffenteile!",
 	"NWC_menu_weapon_message" : "In diesem Slot wird momentan $WEAPON verwendet.",
 	"NWC_menu_mod_default" : "In diesem Slot wird momentan die Standardwaffe des Spiels verwendet.",

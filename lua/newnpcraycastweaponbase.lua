@@ -37,23 +37,28 @@ Hooks:PreHook(NewNPCRaycastWeaponBase, "tweak_data_anim_play", "tweak_data_anim_
 	self._checked_fire_anim = true
 end)
 
--- use existing laser module (if there is one) instead of spawning a new one
-function NewNPCRaycastWeaponBase:set_laser_enabled(state)
-	if state and not alive(self._laser_unit) then
-		if self._assembly_complete then
-			local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
-			for _, id in ipairs(gadgets) do
-				local gadget = self._parts[id]
-				local gadget_base = gadget and gadget.unit:base()
-				if gadget_base and gadget_base.GADGET_TYPE == "laser" then
-					self._laser_unit = gadget.unit
-					self._remove_laser_unit = false
-					break
-				end
+-- check for usable gadgets
+Hooks:PostHook(NewNPCRaycastWeaponBase, "clbk_assembly_complete", "clbk_assembly_complete_nwc", function (self)
+	local gadgets = managers.weapon_factory:get_parts_from_weapon_by_type_or_perk("gadget", self._factory_id, self._blueprint)
+	for _, id in ipairs(gadgets) do
+		local gadget = self._parts[id]
+		local gadget_base = gadget and gadget.unit:base()
+		if gadget_base then
+			if gadget_base.GADGET_TYPE == "laser" and not self._laser_unit then
+				self._laser_unit = gadget.unit
+			elseif gadget_base.GADGET_TYPE == "flashlight" and not self._flashlight_unit and NWC.settings.allow_flashlights then
+				self._flashlight_unit = gadget.unit
+			elseif self._laser_unit and self._flashlight_unit then
+				break
 			end
 		end
+	end
+end)
 
-		if not self._laser_unit then
+-- use existing laser module (if there is one) instead of spawning a new one
+function NewNPCRaycastWeaponBase:set_laser_enabled(state)
+	if state then
+		if not alive(self._laser_unit) then
 			local spawn_rot = self._unit:rotation()
 			local spawn_pos = self._unit:position()
 			spawn_pos = spawn_pos + spawn_rot:y() * 12 + spawn_rot:z() * 3
@@ -75,6 +80,38 @@ function NewNPCRaycastWeaponBase:set_laser_enabled(state)
 		end
 		self._laser_unit = nil
 	end
+end
+
+local flashlight_state_changed_original = NewNPCRaycastWeaponBase.flashlight_state_changed
+function NewNPCRaycastWeaponBase:flashlight_state_changed(...)
+	if not alive(self._flashlight_unit) then
+		return flashlight_state_changed_original(self, ...)
+	end
+
+	if managers.game_play_central:flashlights_on() then
+		self._flashlight_unit:base():set_on()
+	else
+		self._flashlight_unit:base():set_off()
+	end
+end
+
+-- use existing flashlight (if there is one)
+local set_flashlight_enabled_original = NewNPCRaycastWeaponBase.set_flashlight_enabled
+function NewNPCRaycastWeaponBase:set_flashlight_enabled(state, ...)
+	if not alive(self._flashlight_unit) then
+		return set_flashlight_enabled_original(self, state, ...)
+	end
+
+	if state then
+		self._flashlight_unit:base():set_on()
+	else
+		self._flashlight_unit:base():set_off()
+	end
+end
+
+local has_flashlight_on_original = NewNPCRaycastWeaponBase.has_flashlight_on
+function NewNPCRaycastWeaponBase:has_flashlight_on(...)
+	return alive(self._flashlight_unit) and self._flashlight_unit:base():is_on() or has_flashlight_on_original(self, ...)
 end
 
 -- destroy the physics collider

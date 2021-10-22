@@ -42,6 +42,7 @@ if not NWC then
 		keep_types = false,
 		keep_sounds = false,
 		keep_sniper_sounds = true,
+		allow_flashlights = false,
 		weapons = {}
 	}
 
@@ -503,6 +504,14 @@ if not NWC then
 			help = "NWC_menu_keep_sniper_sounds_desc",
 			on_callback = function (item) self:change_menu_setting(item) end,
 			value = self.settings.keep_sniper_sounds
+		})
+
+		base_settings:Toggle({
+			name = "allow_flashlights",
+			text = "NWC_menu_allow_flashlights",
+			help = "NWC_menu_allow_flashlights_desc",
+			on_callback = function (item) self:change_menu_setting(item) end,
+			value = self.settings.allow_flashlights
 		})
 
 		base_settings:Divider({
