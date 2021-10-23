@@ -116,7 +116,7 @@ function CopInventory:drop_weapon(...)
 
 		NWC:spawn_collision_box(weapon_unit, self._weapon_drop_dir, self._weapon_drop_vel)
 		managers.game_play_central:weapon_dropped(weapon_unit)
-		if weapon_unit:base().set_flashlight_enabled then
+		if weapon_unit:base().has_flashlight_on and weapon_unit:base():has_flashlight_on() then
 			weapon_unit:base():set_flashlight_enabled(false)
 		end
 
@@ -124,7 +124,7 @@ function CopInventory:drop_weapon(...)
 		if weapon_unit then
 			NWC:spawn_collision_box(weapon_unit, self._weapon_drop_dir, self._weapon_drop_vel)
 			managers.game_play_central:weapon_dropped(weapon_unit)
-			if weapon_unit:base().set_flashlight_enabled then
+			if weapon_unit:base().has_flashlight_on and weapon_unit:base():has_flashlight_on() then
 				weapon_unit:base():set_flashlight_enabled(false)
 			end
 		end

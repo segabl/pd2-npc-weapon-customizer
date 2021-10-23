@@ -53,6 +53,10 @@ Hooks:PostHook(NewNPCRaycastWeaponBase, "clbk_assembly_complete", "clbk_assembly
 			end
 		end
 	end
+
+	if self._check_flashlight then
+		self:flashlight_state_changed()
+	end
 end)
 
 -- use existing laser module (if there is one) instead of spawning a new one
@@ -84,7 +88,12 @@ end
 
 local flashlight_state_changed_original = NewNPCRaycastWeaponBase.flashlight_state_changed
 function NewNPCRaycastWeaponBase:flashlight_state_changed(...)
-	if not alive(self._flashlight_unit) then
+	if self._original_id and not self._assembly_complete then
+		self._check_flashlight = managers.game_play_central:flashlights_on()
+		return
+	end
+
+	if not self._original_id or not alive(self._flashlight_unit) then
 		return flashlight_state_changed_original(self, ...)
 	end
 
@@ -98,11 +107,16 @@ end
 -- use existing flashlight (if there is one)
 local set_flashlight_enabled_original = NewNPCRaycastWeaponBase.set_flashlight_enabled
 function NewNPCRaycastWeaponBase:set_flashlight_enabled(state, ...)
-	if not alive(self._flashlight_unit) then
+	if self._original_id and not self._assembly_complete then
+		self._check_flashlight = state
+		return
+	end
+
+	if not self._original_id or not alive(self._flashlight_unit) then
 		return set_flashlight_enabled_original(self, state, ...)
 	end
 
-	if state then
+	if state and managers.game_play_central:flashlights_on() then
 		self._flashlight_unit:base():set_on()
 	else
 		self._flashlight_unit:base():set_off()
@@ -111,7 +125,7 @@ end
 
 local has_flashlight_on_original = NewNPCRaycastWeaponBase.has_flashlight_on
 function NewNPCRaycastWeaponBase:has_flashlight_on(...)
-	return alive(self._flashlight_unit) and self._flashlight_unit:base():is_on() or has_flashlight_on_original(self, ...)
+	return self._original_id and alive(self._flashlight_unit) and self._flashlight_unit:base():is_on() or has_flashlight_on_original(self, ...)
 end
 
 -- destroy the physics collider
