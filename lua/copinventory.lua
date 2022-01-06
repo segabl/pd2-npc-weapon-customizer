@@ -56,8 +56,9 @@ function CopInventory:add_unit(new_unit, ...)
 			new_base.use_thq = function () return false end
 		end
 
-		-- plug old raycast function
+		-- plug old functions
 		new_base._fire_raycast = old_base._fire_raycast
+		new_base._get_spread = old_base._get_spread
 
 		new_base:set_factory_data(replacement_data.factory_id)
 		new_base:set_cosmetics_data(replacement_data.cosmetics)
