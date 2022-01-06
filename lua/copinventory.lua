@@ -26,7 +26,7 @@ function CopInventory:add_unit(new_unit, ...)
 		-- save original name and set new name
 		new_base._old_unit_name = old_unit:name()
 		new_base._player_name_id = original_id:gsub("_crew", "")
-		new_base._name_id = old_base._name_id .. "_" .. new_base._player_name_id .. (self._shield_unit and "_shield_nwc" or "_nwc")
+		new_base._name_id = old_base._name_id:gsub("_npc", "") .. "_" .. new_base._player_name_id .. (self._shield_unit and "_shield_nwc" or "_nwc")
 		new_base._original_id =  original_id
 
 		-- setup new tweak data
