@@ -43,6 +43,7 @@ if not NWC then
 		keep_sounds = false,
 		keep_sniper_sounds = true,
 		allow_flashlights = false,
+		flashlight_chance = 0.5,
 		weapons = {}
 	}
 
@@ -510,8 +511,25 @@ if not NWC then
 			name = "allow_flashlights",
 			text = "NWC_menu_allow_flashlights",
 			help = "NWC_menu_allow_flashlights_desc",
-			on_callback = function (item) self:change_menu_setting(item) end,
+			on_callback = function (item)
+				self:change_menu_setting(item)
+				self._menu_flashlight_chance:SetEnabled(item:Value())
+			end,
 			value = self.settings.allow_flashlights
+		})
+
+		self._menu_flashlight_chance = base_settings:Slider({
+			enabled = self.settings.allow_flashlights,
+			name = "flashlight_chance",
+			text = "NWC_menu_flashlight_chance",
+			help = "NWC_menu_flashlight_chance_desc",
+			on_callback = function (item) self:change_menu_setting(item) end,
+			value = self.settings.flashlight_chance,
+			min = 0,
+			max = 1,
+			step = 0.05,
+			floats = 2,
+			wheel_control = true
 		})
 
 		base_settings:Divider({

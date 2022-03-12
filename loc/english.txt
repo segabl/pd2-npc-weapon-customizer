@@ -24,6 +24,8 @@
 	"NWC_menu_keep_sniper_sounds_desc" : "Snipers will play the original firing sounds",
 	"NWC_menu_allow_flashlights" : "Allow flashlights",
 	"NWC_menu_allow_flashlights_desc" : "Allows enemies to use flashlight gadgets on their weapons if the current mission has flashlights enabled",
+	"NWC_menu_flashlight_chance" : "Flashlight chance",
+	"NWC_menu_flashlight_chance_desc" : "Chance for an enemy to use their flashlight if the current mission has flashlights enabled",
 	"NWC_menu_locked_slot" : "Incompatible custom weapon or custom weapon parts!",
 	"NWC_menu_weapon_message" : "Currently using $WEAPON in this slot.",
 	"NWC_menu_mod_default" : "Currently using the game's default weapon in this slot.",

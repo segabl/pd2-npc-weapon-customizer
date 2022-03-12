@@ -24,6 +24,8 @@
 	"NWC_menu_keep_sniper_sounds_desc" : "狙击手的武器会保持原来默认武器的枪声",
 	"NWC_menu_allow_flashlights" : "允许使用手电筒",
 	"NWC_menu_allow_flashlights_desc" : "在敌人会用手电筒的地图中，允许敌人使用武器的手电筒配件",
+	"NWC_menu_flashlight_chance" : "电筒启用率",
+	"NWC_menu_flashlight_chance_desc" : "在可以开启手电筒的地图，敌人打开手电筒配件的概率",
 	"NWC_menu_locked_slot" : "该武器或该武器的配件不兼容！",
 	"NWC_menu_weapon_message" : "这格当前正在使用装备库中的 $WEAPON 。",
 	"NWC_menu_mod_default" : "这格当前正在使用游戏默认武器。",

@@ -95,13 +95,14 @@ function NewNPCRaycastWeaponBase:flashlight_state_changed(...)
 	end
 
 	if self._flashlight_state and managers.game_play_central:flashlights_on() and NWC.settings.allow_flashlights then
-		self._flashlight_unit:base():set_on()
+		if math.random() < NWC.settings.flashlight_chance then
+			self._flashlight_unit:base():set_on()
+		end
 	else
 		self._flashlight_unit:base():set_off()
 	end
 end
 
--- use existing flashlight (if there is one)
 local set_flashlight_enabled_original = NewNPCRaycastWeaponBase.set_flashlight_enabled
 function NewNPCRaycastWeaponBase:set_flashlight_enabled(state, ...)
 	if not self._original_id then
@@ -109,16 +110,7 @@ function NewNPCRaycastWeaponBase:set_flashlight_enabled(state, ...)
 	end
 
 	self._flashlight_state = state
-
-	if not alive(self._flashlight_unit) then
-		return
-	end
-
-	if state and managers.game_play_central:flashlights_on() and NWC.settings.allow_flashlights then
-		self._flashlight_unit:base():set_on()
-	else
-		self._flashlight_unit:base():set_off()
-	end
+	self:flashlight_state_changed()
 end
 
 local set_gadget_on_original = NewNPCRaycastWeaponBase.set_gadget_on
