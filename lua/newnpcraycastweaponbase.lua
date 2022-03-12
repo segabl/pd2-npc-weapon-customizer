@@ -46,7 +46,7 @@ Hooks:PostHook(NewNPCRaycastWeaponBase, "clbk_assembly_complete", "clbk_assembly
 		if gadget_base then
 			if gadget_base.GADGET_TYPE == "laser" and not self._laser_unit then
 				self._laser_unit = gadget.unit
-			elseif gadget_base.GADGET_TYPE == "flashlight" and not self._flashlight_unit and NWC.settings.allow_flashlights then
+			elseif gadget_base.GADGET_TYPE == "flashlight" and not self._flashlight_unit then
 				self._flashlight_unit = gadget.unit
 			elseif self._laser_unit and self._flashlight_unit then
 				break
@@ -54,9 +54,7 @@ Hooks:PostHook(NewNPCRaycastWeaponBase, "clbk_assembly_complete", "clbk_assembly
 		end
 	end
 
-	if self._check_flashlight then
-		self:flashlight_state_changed()
-	end
+	self:flashlight_state_changed()
 end)
 
 -- use existing laser module (if there is one) instead of spawning a new one
@@ -88,16 +86,15 @@ end
 
 local flashlight_state_changed_original = NewNPCRaycastWeaponBase.flashlight_state_changed
 function NewNPCRaycastWeaponBase:flashlight_state_changed(...)
-	if self._original_id and not self._assembly_complete then
-		self._check_flashlight = managers.game_play_central:flashlights_on()
-		return
-	end
-
-	if not self._original_id or not alive(self._flashlight_unit) then
+	if not self._original_id then
 		return flashlight_state_changed_original(self, ...)
 	end
 
-	if managers.game_play_central:flashlights_on() then
+	if not alive(self._flashlight_unit) then
+		return
+	end
+
+	if self._flashlight_state and managers.game_play_central:flashlights_on() and NWC.settings.allow_flashlights then
 		self._flashlight_unit:base():set_on()
 	else
 		self._flashlight_unit:base():set_off()
@@ -107,19 +104,27 @@ end
 -- use existing flashlight (if there is one)
 local set_flashlight_enabled_original = NewNPCRaycastWeaponBase.set_flashlight_enabled
 function NewNPCRaycastWeaponBase:set_flashlight_enabled(state, ...)
-	if self._original_id and not self._assembly_complete then
-		self._check_flashlight = state
-		return
-	end
-
-	if not self._original_id or not alive(self._flashlight_unit) then
+	if not self._original_id then
 		return set_flashlight_enabled_original(self, state, ...)
 	end
 
-	if state and managers.game_play_central:flashlights_on() then
+	self._flashlight_state = state
+
+	if not alive(self._flashlight_unit) then
+		return
+	end
+
+	if state and managers.game_play_central:flashlights_on() and NWC.settings.allow_flashlights then
 		self._flashlight_unit:base():set_on()
 	else
 		self._flashlight_unit:base():set_off()
+	end
+end
+
+local set_gadget_on_original = NewNPCRaycastWeaponBase.set_gadget_on
+function NewNPCRaycastWeaponBase:set_gadget_on(...)
+	if not self._original_id then
+		return set_gadget_on_original(self, ...)
 	end
 end
 
