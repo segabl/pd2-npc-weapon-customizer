@@ -8,77 +8,85 @@ function CopInventory:add_unit(new_unit, ...)
 	add_unit_original(self, new_unit, ...)
 	local quality = NWC:get_quality_setting(self._unit)
 	local replacement_data = self._is_cop_inventory and quality > 1 and NWC:get_weapon(NWC.weapon_unit_mappings[new_unit:name():key()])
-	if replacement_data then
-		local old_unit = new_unit
-		local old_base = old_unit:base()
-
-		-- load and spawn replacement weapon
-		local factory_weapon = tweak_data.weapon.factory[replacement_data.factory_id]
-		local ids_unit_name = Idstring(factory_weapon.unit)
-
-		managers.dyn_resource:load(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
-
-		new_unit = World:spawn_unit(Idstring(factory_weapon.unit), Vector3(), Rotation())
-
-		local new_base = new_unit:base()
-		local original_id = new_base._name_id
-
-		-- save original name and set new name
-		new_base._old_unit_name = old_unit:name()
-		new_base._player_name_id = original_id:gsub("_crew", "")
-		new_base._name_id = old_base._name_id:gsub("_npc", "") .. "_" .. new_base._player_name_id .. (self._shield_unit and "_shield_nwc" or "_nwc")
-		new_base._original_id =  original_id
-
-		-- setup new tweak data
-		if not tweak_data.weapon[new_base._name_id] then
-			tweak_data.weapon[new_base._name_id] = deep_clone(tweak_data.weapon[old_base._name_id])
-			if not NWC.settings.keep_sounds and not (NWC.settings.keep_sniper_sounds and tweak_data.weapon[new_base._name_id].sounds.prefix:find("sniper_npc")) then
-				tweak_data.weapon[new_base._name_id].sounds = tweak_data.weapon[original_id].sounds
-			end
-			if not NWC.settings.keep_types and not self._shield_unit then
-				tweak_data.weapon[new_base._name_id].anim_usage = tweak_data.weapon[original_id].anim_usage or tweak_data.weapon[original_id].usage
-				tweak_data.weapon[new_base._name_id].hold = tweak_data.weapon[original_id].hold
-				tweak_data.weapon[new_base._name_id].reload = tweak_data.weapon[original_id].reload
-				tweak_data.weapon[new_base._name_id].pull_magazine_during_reload = tweak_data.weapon[original_id].pull_magazine_during_reload
-			end
-		end
-
-		-- fix init data
-		new_base:_create_use_setups()
-		new_base:set_ammo_max(tweak_data.weapon[new_base._name_id].AMMO_MAX)
-		new_base:set_ammo_total(new_base:get_ammo_max())
-		new_base:set_ammo_max_per_clip(tweak_data.weapon[new_base._name_id].CLIP_AMMO_MAX)
-		new_base:set_ammo_remaining_in_clip(new_base:get_ammo_max_per_clip())
-		new_base._damage = old_base._damage
-
-		-- disable thq if needed
-		if quality < 3 then
-			new_base.use_thq = function () return false end
-		end
-
-		-- plug old functions
-		new_base._fire_raycast = old_base._fire_raycast
-		new_base._get_spread = old_base._get_spread
-
-		new_base:set_factory_data(replacement_data.factory_id)
-		new_base:set_cosmetics_data(replacement_data.cosmetics)
-		new_base:assemble_from_blueprint(replacement_data.factory_id, replacement_data.blueprint)
-		new_base:check_npc()
-
-		local setup_data = old_base._setup
-		setup_data.ignore_units = {
-			self._unit,
-			new_unit,
-			self._shield_unit
-		}
-		new_base:setup(setup_data)
-
-		if new_base.AKIMBO then
-			new_base:create_second_gun()
-		end
-
-		add_unit_original(self, new_unit, ...)
+	if not replacement_data then
+		return
 	end
+
+	local old_unit = new_unit
+	local old_base = old_unit:base()
+	if alive(old_base._second_gun) then
+		old_base._second_gun:set_slot(0)
+	end
+
+	-- load and spawn replacement weapon
+	local factory_weapon = tweak_data.weapon.factory[replacement_data.factory_id]
+	local ids_unit_name = Idstring(factory_weapon.unit)
+
+	managers.dyn_resource:load(Idstring("unit"), ids_unit_name, managers.dyn_resource.DYN_RESOURCES_PACKAGE)
+
+	new_unit = World:spawn_unit(Idstring(factory_weapon.unit), Vector3(), Rotation())
+
+	local new_base = new_unit:base()
+	local original_id = new_base._name_id
+
+	-- save original name and set new name
+	new_base._old_unit_name = old_unit:name()
+	new_base._player_name_id = original_id:gsub("_crew", "")
+	new_base._name_id = old_base._name_id:gsub("_npc", "") .. "_" .. new_base._player_name_id .. (self._shield_unit and "_shield_nwc" or "_nwc")
+	new_base._original_id =  original_id
+
+	-- setup new tweak data
+	if not tweak_data.weapon[new_base._name_id] then
+		tweak_data.weapon[new_base._name_id] = deep_clone(tweak_data.weapon[old_base._name_id])
+		if not NWC.settings.keep_sounds and not (NWC.settings.keep_sniper_sounds and tweak_data.weapon[new_base._name_id].sounds.prefix:find("sniper_npc")) then
+			tweak_data.weapon[new_base._name_id].sounds = tweak_data.weapon[original_id].sounds
+		end
+		if not NWC.settings.keep_types and not self._shield_unit then
+			tweak_data.weapon[new_base._name_id].anim_usage = tweak_data.weapon[original_id].anim_usage or tweak_data.weapon[original_id].usage
+			tweak_data.weapon[new_base._name_id].hold = tweak_data.weapon[original_id].hold
+			tweak_data.weapon[new_base._name_id].reload = tweak_data.weapon[original_id].reload
+			tweak_data.weapon[new_base._name_id].pull_magazine_during_reload = tweak_data.weapon[original_id].pull_magazine_during_reload
+		end
+	end
+
+	-- fix init data
+	new_base:_create_use_setups()
+	new_base:set_ammo_max(tweak_data.weapon[new_base._name_id].AMMO_MAX)
+	new_base:set_ammo_total(new_base:get_ammo_max())
+	new_base:set_ammo_max_per_clip(tweak_data.weapon[new_base._name_id].CLIP_AMMO_MAX)
+	new_base:set_ammo_remaining_in_clip(new_base:get_ammo_max_per_clip())
+	new_base._damage = old_base._damage
+
+	-- disable thq if needed
+	if quality < 3 then
+		new_base.use_thq = function () return false end
+	end
+
+	-- plug old functions
+	new_base._fire_raycast = old_base._fire_raycast
+	new_base._get_spread = old_base._get_spread
+
+	new_base:set_factory_data(replacement_data.factory_id)
+	new_base:set_cosmetics_data(replacement_data.cosmetics)
+	new_base:assemble_from_blueprint(replacement_data.factory_id, replacement_data.blueprint)
+	new_base:check_npc()
+
+	local setup_data = old_base._setup
+	setup_data.ignore_units = {
+		self._unit,
+		new_unit,
+		self._shield_unit
+	}
+	new_base:setup(setup_data)
+
+	if new_base.AKIMBO then
+		local use_thq = NPCAkimboWeaponBase.use_thq
+		NPCAkimboWeaponBase.use_thq = new_base.use_thq
+		new_base:create_second_gun()
+		NPCAkimboWeaponBase.use_thq = use_thq
+	end
+
+	add_unit_original(self, new_unit, ...)
 end
 
 -- change the sync index to the original weapon's index and remove unneeded data
