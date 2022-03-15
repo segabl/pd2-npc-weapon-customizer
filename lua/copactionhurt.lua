@@ -3,9 +3,11 @@ function CopActionHurt:clbk_shooting_hurt()
 	if not alive(self._weapon_unit) then
 		return
 	end
-	-- the "fire" object seems to not exist sometimes, in that case use the weapon unit itself
-	local fire_obj = self._weapon_unit:get_object(Idstring("fire")) or self._weapon_unit
-	self._weapon_unit:base():singleshot(fire_obj:position(), fire_obj:rotation(), 1, false, nil, nil, nil, nil)
+	local fire_obj = self._weapon_unit:get_object(Idstring("fire"))
+	local rot = fire_obj and fire_obj:rotation()
+	if rot and rot.cross then -- not sure what's happening there and why the function sometimes doesnt exist, if it doesnt, calling singleshot would crash
+		self._weapon_unit:base():singleshot(fire_obj:position(), rot, 1, false, nil, nil, nil, nil)
+	end
 end
 
 Hooks:PostHook(CopActionHurt, "_upd_hurt", "_upd_hurt_nwc", function (self, t)
