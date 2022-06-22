@@ -56,6 +56,10 @@ function CopInventory:add_unit(new_unit, ...)
 	new_base:set_ammo_max_per_clip(tweak_data.weapon[new_base._name_id].CLIP_AMMO_MAX)
 	new_base:set_ammo_remaining_in_clip(new_base:get_ammo_max_per_clip())
 	new_base._damage = old_base._damage
+	new_base._trail_length = old_base._trail_length
+
+	local tweak_trail = tweak_data.weapon[new_base._name_id].trail
+	new_base._trail_effect_table.effect = tweak_trail and Idstring(tweak_trail) or new_base._trail_effect_table.effect
 
 	-- disable thq if needed
 	if quality < 3 then
@@ -65,6 +69,11 @@ function CopInventory:add_unit(new_unit, ...)
 	-- plug old functions
 	new_base._fire_raycast = old_base._fire_raycast
 	new_base._get_spread = old_base._get_spread
+	new_base._spawn_trail_effect = function (b, ...)
+		if alive(b._obj_fire) then
+			return old_base._spawn_trail_effect(b, ...)
+		end
+	end
 
 	new_base:set_factory_data(replacement_data.factory_id)
 	new_base:set_cosmetics_data(replacement_data.cosmetics)
