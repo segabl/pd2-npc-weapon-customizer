@@ -2,12 +2,14 @@
 	"name" : "NPC Weapon Customizer",
 	"description" : "Customize the weapons and mods NPCs will use",
 	"author" : "Hoppip",
-	"contact" : "Hoppip#1630",
 	"color" : "0.043 0.808 0.6",
 	"image" : "mod.png",
 	"version" : "2.1.1",
 	"updates" : [{
 		"identifier" : "pd2-npc-weapon-customizer",
 		"host": { "meta": "https://updates.hoppip.at/pd2-npc-weapon-customizer" }
-	}]
+	}],
+	"dependencies" : {
+		"BeardLib" : { "download_url" : "https://github.com/simon-wh/PAYDAY-2-BeardLib/archive/master.zip" }
+	}
 }
