@@ -30,7 +30,9 @@ if not NWC then
 		sg417 = { id = "contraband" },
 		svdsil_snp = { id = "siltstone", menu_suffix = " (Mobster Sniper)" },
 		mini = { id = "m134" },
-		heavy_zeal_sniper = { id = "g3", menu_suffix = " (ZEAL Sniper)" }
+		heavy_zeal_sniper = { id = "g3", menu_suffix = " (ZEAL Sniper)" },
+		dmr = { menu_suffix = " (Marshal Marksman)" },
+		sko12_conc = { id = "sko12" }
 	}
 	NWC.weapon_unit_mappings = {}
 
@@ -399,7 +401,7 @@ if not NWC then
 		local info = self.weapon_info[weap_id]
 		local w = info and info.id or weap_id
 		local suffix = info and info.menu_suffix or ""
-		return tweak_data.weapon[w] and (managers.localization:text(tweak_data.weapon[w].name_id) .. suffix) or w:pretty(true)
+		return tweak_data.weapon[w] and (managers.localization:text(tweak_data.weapon[w].name_id) .. suffix) or (w:pretty(true) .. suffix)
 	end
 
 	function NWC:fit_texture(item, h_offset)
