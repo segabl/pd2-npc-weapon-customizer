@@ -8,8 +8,5 @@
 	"updates" : [{
 		"identifier" : "pd2-npc-weapon-customizer",
 		"host": { "meta": "https://updates.hoppip.at/pd2-npc-weapon-customizer" }
-	}],
-	"dependencies" : {
-		"BeardLib" : { "download_url" : "https://github.com/simon-wh/PAYDAY-2-BeardLib/archive/master.zip" }
-	}
+	}]
 }
