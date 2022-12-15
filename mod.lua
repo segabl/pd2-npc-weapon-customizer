@@ -31,7 +31,7 @@ if not NWC then
 		svdsil_snp = { id = "siltstone", menu_suffix = " (Mobster Sniper)" },
 		mini = { id = "m134" },
 		heavy_zeal_sniper = { id = "g3", menu_suffix = " (ZEAL Sniper)" },
-		dmr = { menu_suffix = " (Marshal Marksman)" },
+		dmr = { id = "victor" },
 		sko12_conc = { id = "sko12" }
 	}
 	NWC.weapon_unit_mappings = {}
