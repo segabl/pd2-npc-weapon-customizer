@@ -101,12 +101,12 @@ end
 -- change the sync index to the original weapon's index and remove unneeded data
 Hooks:PostHook(CopInventory, "save", "save_nwc", function (self, data)
 	local old_name = alive(self:equipped_unit()) and self:equipped_unit():base()._old_unit_name
-	if old_name then
-		data.equipped_weapon_index = self._get_weapon_sync_index(old_name) or 4
-		data.blueprint_string = nil
-		data.cosmetics_string = "nil-1-0"
-		data.gadget_on = nil
-		data.gadget_color = nil
+	if old_name and data.inventory then
+		data.inventory.equipped_weapon_index = self._get_weapon_sync_index(old_name) or 4
+		data.inventory.blueprint_string = nil
+		data.inventory.cosmetics_string = "nil-1-0"
+		data.inventory.gadget_on = nil
+		data.inventory.gadget_color = nil
 	end
 end)
 
