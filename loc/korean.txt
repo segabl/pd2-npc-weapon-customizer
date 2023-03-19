@@ -15,7 +15,7 @@
 	"NWC_menu_quality_specials_desc" : "모든 특수 적 및 보스 유형의 적 무기 퀄리티를 조정합니다.",
 	"NWC_menu_quality_jokers" : "조커 무기 퀄리티",
 	"NWC_menu_quality_jokers_desc" : "모든 전환된 적의 무기 퀄리티를 조정합니다.",
-	"NWC_menu_quality_warning" : "일반 적 무기 퀼리티를 \"플레이어 모델(1인칭)\"로 설정하면 과도한 성능 및 메모리 영향으로 인해 일반 게임 플레이에는 권장되지 않습니다!",
+	"NWC_menu_quality_warning" : "일반 적 무기 퀼리티를 \"플레이어 모델(1인칭)\"로 설정하면 과도한 성능 및 메모리 사용이 일어날 수 있으므로 일반 게임 플레이에는 권장하지 않습니다!",
 	"NWC_menu_keep_types" : "원본 애니메이션 유지",
 	"NWC_menu_keep_types_desc" : "무기는 원본 정지 및 재장전 애니메이션을 사용합니다.",
 	"NWC_menu_keep_sounds" : "원본 발사 소리 유지",
