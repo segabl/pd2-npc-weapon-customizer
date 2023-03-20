@@ -57,6 +57,8 @@ function CopInventory:add_unit(new_unit, ...)
 	new_base:set_ammo_remaining_in_clip(new_base:get_ammo_max_per_clip())
 	new_base._damage = old_base._damage
 	new_base._trail_length = old_base._trail_length
+	new_base._bullet_class = old_base._bullet_class
+	new_base._concussion_tweak = old_base._concussion_tweak
 
 	local tweak_trail = tweak_data.weapon[new_base._name_id].trail
 	new_base._trail_effect_table.effect = tweak_trail and Idstring(tweak_trail) or new_base._trail_effect_table.effect
