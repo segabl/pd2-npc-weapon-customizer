@@ -220,6 +220,7 @@ if not NWC then
 			back_callback = function ()
 				self.weapons[weap_id] = nil
 				self:set_menu_state(true)
+				managers.menu_component:close_blackmarket_gui()
 			end,
 			topic_id = "bm_menu_" .. category
 		}
