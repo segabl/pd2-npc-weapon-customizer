@@ -671,6 +671,7 @@ if not NWC then
 			self.menu:Enable()
 		else
 			self.menu:Disable()
+			managers.menu_component:close_blackmarket_gui()
 		end
 	end
 
